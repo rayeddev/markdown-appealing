@@ -1,0 +1,57 @@
+{
+  "name": "markdown-appealing",
+  "displayName": "Markdown Appealing",
+  "description": "Beautiful markdown preview with multiple themes, dark/light toggle, and sidebar table of contents navigation.",
+  "version": "0.1.0",
+  "publisher": "rayedalnoom",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownAppealing.openPreview",
+        "title": "Markdown Appealing: Open Preview"
+      },
+      {
+        "command": "markdownAppealing.switchTheme",
+        "title": "Markdown Appealing: Switch Theme"
+      },
+      {
+        "command": "markdownAppealing.toggleDarkMode",
+        "title": "Markdown Appealing: Toggle Dark/Light Mode"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "markdownAppealing.openPreview",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorLangId == markdown"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
+  }
+}

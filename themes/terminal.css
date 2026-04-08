@@ -1,0 +1,96 @@
+/* ===== Terminal Theme — Monospace, hacker-feel ===== */
+
+[data-theme="terminal"] {
+  --bg: #1e1e1e;
+  --text: #d4d4d4;
+  --text-muted: #808080;
+  --border: #333333;
+  --link: #4ec9b0;
+  --accent: #569cd6;
+  --sidebar-bg: #181818;
+  --hover-bg: #2a2a2a;
+  --active-bg: #0e3a1e;
+  --active-text: #4ec9b0;
+  --btn-bg: #252525;
+  --code-bg: #2d2d2d;
+  --pre-bg: #1a1a1a;
+  --blockquote-bg: #1a2332;
+  --th-bg: #2a2a2a;
+  --tr-even-bg: #232323;
+
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+}
+
+[data-theme="terminal"] .content-inner {
+  font-size: 0.92em;
+  line-height: 1.65;
+}
+
+[data-theme="terminal"] .content-inner h1::before { content: "# "; color: var(--accent); }
+[data-theme="terminal"] .content-inner h2::before { content: "## "; color: var(--accent); }
+[data-theme="terminal"] .content-inner h3::before { content: "### "; color: var(--accent); }
+
+[data-theme="terminal"] .content-inner h2 {
+  border-bottom-color: #333;
+  border-bottom-style: dashed;
+}
+
+[data-theme="terminal"] .content-inner pre {
+  border-color: #444;
+  border-left: 3px solid var(--accent);
+}
+
+[data-theme="terminal"] .content-inner blockquote {
+  border-left-color: #4ec9b0;
+  font-style: italic;
+}
+
+[data-theme="terminal"] .sidebar a::before {
+  content: "> ";
+  color: var(--text-muted);
+}
+
+[data-theme="terminal"] .sidebar a.active::before {
+  color: var(--active-text);
+}
+
+/* Terminal light mode */
+[data-theme="terminal"][data-mode="light"] {
+  --bg: #f5f5f5;
+  --text: #1e1e1e;
+  --text-muted: #6a6a6a;
+  --border: #d0d0d0;
+  --link: #0d7377;
+  --accent: #005fb8;
+  --sidebar-bg: #ebebeb;
+  --hover-bg: #e0e0e0;
+  --active-bg: #c8e6c9;
+  --active-text: #1b5e20;
+  --btn-bg: #e8e8e8;
+  --code-bg: #e8e8e8;
+  --pre-bg: #ececec;
+  --blockquote-bg: #e3f2fd;
+  --th-bg: #e0e0e0;
+  --tr-even-bg: #eeeeee;
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="terminal"]:not([data-mode]) {
+    --bg: #f5f5f5;
+    --text: #1e1e1e;
+    --text-muted: #6a6a6a;
+    --border: #d0d0d0;
+    --link: #0d7377;
+    --accent: #005fb8;
+    --sidebar-bg: #ebebeb;
+    --hover-bg: #e0e0e0;
+    --active-bg: #c8e6c9;
+    --active-text: #1b5e20;
+    --btn-bg: #e8e8e8;
+    --code-bg: #e8e8e8;
+    --pre-bg: #ececec;
+    --blockquote-bg: #e3f2fd;
+    --th-bg: #e0e0e0;
+    --tr-even-bg: #eeeeee;
+  }
+}

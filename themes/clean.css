@@ -1,0 +1,62 @@
+/* ===== Clean Theme — Modern, airy, polished ===== */
+
+[data-theme="clean"] {
+  --bg: #ffffff;
+  --text: #1a1a2e;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --link: #2563eb;
+  --accent: #3b82f6;
+  --sidebar-bg: #f9fafb;
+  --hover-bg: #f3f4f6;
+  --active-bg: #dbeafe;
+  --active-text: #1d4ed8;
+  --btn-bg: #ffffff;
+  --code-bg: #f3f4f6;
+  --pre-bg: #f8fafc;
+  --blockquote-bg: #f0f9ff;
+  --th-bg: #f9fafb;
+  --tr-even-bg: #fafafa;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+[data-theme="clean"][data-mode="dark"] {
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: #1e293b;
+  --link: #60a5fa;
+  --accent: #3b82f6;
+  --sidebar-bg: #0b1120;
+  --hover-bg: #1e293b;
+  --active-bg: #1e3a5f;
+  --active-text: #93c5fd;
+  --btn-bg: #1e293b;
+  --code-bg: #1e293b;
+  --pre-bg: #0f172a;
+  --blockquote-bg: #0c1929;
+  --th-bg: #1e293b;
+  --tr-even-bg: #131c2e;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="clean"]:not([data-mode]) {
+    --bg: #0f172a;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --link: #60a5fa;
+    --accent: #3b82f6;
+    --sidebar-bg: #0b1120;
+    --hover-bg: #1e293b;
+    --active-bg: #1e3a5f;
+    --active-text: #93c5fd;
+    --btn-bg: #1e293b;
+    --code-bg: #1e293b;
+    --pre-bg: #0f172a;
+    --blockquote-bg: #0c1929;
+    --th-bg: #1e293b;
+    --tr-even-bg: #131c2e;
+  }
+}
