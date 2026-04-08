@@ -4,6 +4,10 @@
   "description": "Beautiful markdown preview with multiple themes, dark/light toggle, and sidebar table of contents navigation.",
   "version": "0.1.0",
   "publisher": "rayedalnoom",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rayeddev/markdown-appealing"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showWarningMessage('Open a preview first.');
         return;
       }
-      const themes = ['clean', 'simple', 'terminal'];
+      const themes = ['clean', 'editorial', 'terminal'];
       const picked = await vscode.window.showQuickPick(themes, {
         placeHolder: 'Select a theme',
       });

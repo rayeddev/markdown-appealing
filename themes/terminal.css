@@ -1,96 +1,286 @@
-/* ===== Terminal Theme — Monospace, hacker-feel ===== */
+/* ===== Terminal Theme — Hacker-native, code-heavy, IBM Plex ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 [data-theme="terminal"] {
-  --bg: #1e1e1e;
-  --text: #d4d4d4;
-  --text-muted: #808080;
-  --border: #333333;
-  --link: #4ec9b0;
-  --accent: #569cd6;
-  --sidebar-bg: #181818;
-  --hover-bg: #2a2a2a;
-  --active-bg: #0e3a1e;
-  --active-text: #4ec9b0;
-  --btn-bg: #252525;
-  --code-bg: #2d2d2d;
-  --pre-bg: #1a1a1a;
-  --blockquote-bg: #1a2332;
-  --th-bg: #2a2a2a;
-  --tr-even-bg: #232323;
+  --bg: #f6f8fa;
+  --bg-subtle: #ebeef2;
+  --surface-elevated: #eef1f5;
+  --ink: #1f2937;
+  --ink-body: #4b5563;
+  --ink-soft: #9ca3af;
+  --border: rgba(0,0,0,0.1);
+  --link: #16a34a;
+  --accent: #16a34a;
+  --accent-dim: #bbf7d0;
+  --accent-bg: rgba(22,163,74,0.04);
+  --accent-border: rgba(22,163,74,0.15);
+  --sidebar-bg: #eff1f5;
+  --hover-bg: #e4e7ed;
+  --active-bg: rgba(22,163,74,0.08);
+  --active-text: #16a34a;
+  --btn-bg: #ebeef2;
+  --code-bg: rgba(22,163,74,0.06);
+  --pre-bg: #eef1f5;
+  --blockquote-bg: rgba(22,163,74,0.04);
+  --th-bg: #ebeef2;
+  --tr-even-bg: #f0f2f6;
 
-  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  --font-display: 'IBM Plex Mono', monospace;
+  --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 }
 
-[data-theme="terminal"] .content-inner {
-  font-size: 0.92em;
-  line-height: 1.65;
-}
-
-[data-theme="terminal"] .content-inner h1::before { content: "# "; color: var(--accent); }
-[data-theme="terminal"] .content-inner h2::before { content: "## "; color: var(--accent); }
-[data-theme="terminal"] .content-inner h3::before { content: "### "; color: var(--accent); }
-
-[data-theme="terminal"] .content-inner h2 {
-  border-bottom-color: #333;
-  border-bottom-style: dashed;
-}
-
-[data-theme="terminal"] .content-inner pre {
-  border-color: #444;
-  border-left: 3px solid var(--accent);
-}
-
-[data-theme="terminal"] .content-inner blockquote {
-  border-left-color: #4ec9b0;
-  font-style: italic;
-}
-
-[data-theme="terminal"] .sidebar a::before {
-  content: "> ";
-  color: var(--text-muted);
-}
-
-[data-theme="terminal"] .sidebar a.active::before {
-  color: var(--active-text);
-}
-
-/* Terminal light mode */
-[data-theme="terminal"][data-mode="light"] {
-  --bg: #f5f5f5;
-  --text: #1e1e1e;
-  --text-muted: #6a6a6a;
-  --border: #d0d0d0;
-  --link: #0d7377;
-  --accent: #005fb8;
-  --sidebar-bg: #ebebeb;
-  --hover-bg: #e0e0e0;
-  --active-bg: #c8e6c9;
-  --active-text: #1b5e20;
-  --btn-bg: #e8e8e8;
-  --code-bg: #e8e8e8;
-  --pre-bg: #ececec;
-  --blockquote-bg: #e3f2fd;
-  --th-bg: #e0e0e0;
-  --tr-even-bg: #eeeeee;
+[data-theme="terminal"][data-mode="dark"],
+[data-theme="terminal"]:not([data-mode]) {
+  --bg: #0a0e14;
+  --bg-subtle: #0f1319;
+  --surface-elevated: #0d1117;
+  --ink: #c5d0de;
+  --ink-body: #8b98ab;
+  --ink-soft: #4a5568;
+  --border: rgba(57,211,83,0.12);
+  --link: #39d353;
+  --accent: #39d353;
+  --accent-dim: #1a3a22;
+  --accent-bg: rgba(57,211,83,0.05);
+  --accent-border: rgba(57,211,83,0.18);
+  --sidebar-bg: #080c10;
+  --hover-bg: #131920;
+  --active-bg: rgba(57,211,83,0.08);
+  --active-text: #39d353;
+  --btn-bg: #0f1319;
+  --code-bg: rgba(57,211,83,0.06);
+  --pre-bg: #0d1117;
+  --blockquote-bg: rgba(57,211,83,0.03);
+  --th-bg: #0f1319;
+  --tr-even-bg: #0b0f15;
 }
 
 @media (prefers-color-scheme: light) {
   [data-theme="terminal"]:not([data-mode]) {
-    --bg: #f5f5f5;
-    --text: #1e1e1e;
-    --text-muted: #6a6a6a;
-    --border: #d0d0d0;
-    --link: #0d7377;
-    --accent: #005fb8;
-    --sidebar-bg: #ebebeb;
-    --hover-bg: #e0e0e0;
-    --active-bg: #c8e6c9;
-    --active-text: #1b5e20;
-    --btn-bg: #e8e8e8;
-    --code-bg: #e8e8e8;
-    --pre-bg: #ececec;
-    --blockquote-bg: #e3f2fd;
-    --th-bg: #e0e0e0;
-    --tr-even-bg: #eeeeee;
+    --bg: #f6f8fa;
+    --bg-subtle: #ebeef2;
+    --surface-elevated: #eef1f5;
+    --ink: #1f2937;
+    --ink-body: #4b5563;
+    --ink-soft: #9ca3af;
+    --border: rgba(0,0,0,0.1);
+    --link: #16a34a;
+    --accent: #16a34a;
+    --accent-dim: #bbf7d0;
+    --accent-bg: rgba(22,163,74,0.04);
+    --accent-border: rgba(22,163,74,0.15);
+    --sidebar-bg: #eff1f5;
+    --hover-bg: #e4e7ed;
+    --active-bg: rgba(22,163,74,0.08);
+    --active-text: #16a34a;
+    --btn-bg: #ebeef2;
+    --code-bg: rgba(22,163,74,0.06);
+    --pre-bg: #eef1f5;
+    --blockquote-bg: rgba(22,163,74,0.04);
+    --th-bg: #ebeef2;
+    --tr-even-bg: #f0f2f6;
   }
+}
+
+/* ── Terminal typography ── */
+body { font-family: var(--font-body); }
+.sidebar, .toolbar { font-family: var(--font-sans); }
+
+[data-theme="terminal"] .content-inner { font-size: 0.95rem; line-height: 1.75; }
+
+[data-theme="terminal"] .content-inner h1,
+[data-theme="terminal"] .content-inner h2,
+[data-theme="terminal"] .content-inner h3,
+[data-theme="terminal"] .content-inner h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+[data-theme="terminal"] .content-inner h1 { font-size: 1.6rem; }
+[data-theme="terminal"] .content-inner h2 { font-size: 1.3rem; border-bottom: none; }
+[data-theme="terminal"] .content-inner h3 { font-size: 1.1rem; }
+
+/* Headings show ## prefix */
+[data-theme="terminal"] .content-inner h1::before { content: "# "; color: var(--accent); font-weight: 400; }
+[data-theme="terminal"] .content-inner h2::before { content: "## "; color: var(--accent); font-weight: 400; }
+[data-theme="terminal"] .content-inner h3::before { content: "### "; color: var(--accent); font-weight: 400; }
+[data-theme="terminal"] .content-inner h4::before { content: "#### "; color: var(--accent); font-weight: 400; }
+
+/* h1, h2 get a dashed underline */
+[data-theme="terminal"] .content-inner h1::after,
+[data-theme="terminal"] .content-inner h2::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 10px;
+  background: var(--border);
+}
+
+/* Inline code */
+[data-theme="terminal"] .content-inner code {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+/* Code blocks — show line numbers, accent left border */
+[data-theme="terminal"] .code-block-wrapper {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+  font-family: var(--font-mono);
+}
+
+[data-theme="terminal"] .code-block-header {
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="terminal"] .code-lang {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+[data-theme="terminal"] .code-lang::before {
+  content: "\276F ";
+  color: var(--accent);
+}
+
+[data-theme="terminal"] .code-copy-btn {
+  font-family: var(--font-mono) !important;
+}
+
+[data-theme="terminal"] .code-copy-btn::before { content: "["; }
+[data-theme="terminal"] .code-copy-btn::after { content: "]"; }
+
+/* Line numbers visible in terminal */
+[data-theme="terminal"] .code-line-numbers {
+  display: block;
+  padding: 12px 0;
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid var(--border);
+  min-width: 44px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.75;
+}
+
+[data-theme="terminal"] .code-line-numbers span {
+  display: block;
+  padding: 0 10px;
+}
+
+[data-theme="terminal"] .code-block-body {
+  display: flex !important;
+}
+
+[data-theme="terminal"] .code-block-body pre {
+  border-left: 3px solid var(--accent) !important;
+}
+
+/* Blockquote — NOTE label */
+[data-theme="terminal"] .content-inner blockquote {
+  border-left: 2px solid var(--accent);
+  background: var(--accent-bg);
+  border-radius: 0;
+  padding: 12px 18px;
+  font-style: normal;
+}
+
+[data-theme="terminal"] .content-inner blockquote::before {
+  content: "NOTE ";
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Lists — arrow markers */
+[data-theme="terminal"] .content-inner ul { list-style: none; padding-left: 0; }
+[data-theme="terminal"] .content-inner ul li { padding-left: 1.8em; position: relative; }
+[data-theme="terminal"] .content-inner ul li::before {
+  content: "\2192";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+[data-theme="terminal"] .content-inner ol li::marker {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+/* Links */
+[data-theme="terminal"] .content-inner a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--accent-border);
+  transition: border-color 0.2s;
+}
+[data-theme="terminal"] .content-inner a:hover {
+  border-bottom-style: solid;
+}
+
+/* Table — mono-styled */
+[data-theme="terminal"] .content-inner table {
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+[data-theme="terminal"] .content-inner th {
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--accent-border);
+  font-size: 0.78rem;
+}
+
+/* HR — terminal style * * * */
+[data-theme="terminal"] .content-inner hr {
+  border: none;
+  margin: 36px 0;
+  height: auto;
+  background: none;
+  position: relative;
+}
+[data-theme="terminal"] .content-inner hr::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--border);
+}
+[data-theme="terminal"] .content-inner hr::after {
+  content: "* * *";
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 10px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+/* Bold text */
+[data-theme="terminal"] .content-inner strong { color: var(--ink); }
+
+/* Sidebar — > prefix on links */
+[data-theme="terminal"] .sidebar .toc-link::before {
+  content: "> ";
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+}
+[data-theme="terminal"] .sidebar .toc-link.active::before {
+  color: var(--active-text);
 }

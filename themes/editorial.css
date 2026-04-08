@@ -1,0 +1,249 @@
+/* ===== Editorial Theme — Magazine-grade typography for long reads ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+[data-theme="editorial"] {
+  --bg: #faf8f4;
+  --bg-subtle: #f0ede6;
+  --surface-elevated: #f5f2ea;
+  --ink: #1a1815;
+  --ink-body: #4a4640;
+  --ink-soft: #8a8580;
+  --border: rgba(0,0,0,0.08);
+  --link: #8b6914;
+  --accent: #8b6914;
+  --accent-dim: #d4cab2;
+  --accent-bg: rgba(139,105,20,0.05);
+  --accent-border: rgba(139,105,20,0.15);
+  --sidebar-bg: #f5f2eb;
+  --hover-bg: #edeae2;
+  --active-bg: rgba(139,105,20,0.08);
+  --active-text: #8b6914;
+  --btn-bg: #faf8f4;
+  --code-bg: rgba(139,105,20,0.06);
+  --pre-bg: #f5f2ea;
+  --blockquote-bg: rgba(139,105,20,0.04);
+  --th-bg: #f0ede6;
+  --tr-even-bg: #f7f5ef;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+}
+
+[data-theme="editorial"][data-mode="dark"],
+[data-theme="editorial"]:not([data-mode]) {
+  --bg: #0c0c10;
+  --bg-subtle: #141418;
+  --surface-elevated: #17171c;
+  --ink: #e4e2de;
+  --ink-body: #a8a5a0;
+  --ink-soft: #6e6b66;
+  --border: rgba(201,169,110,0.12);
+  --link: #c9a96e;
+  --accent: #c9a96e;
+  --accent-dim: #4a4535;
+  --accent-bg: rgba(201,169,110,0.07);
+  --accent-border: rgba(201,169,110,0.25);
+  --sidebar-bg: #0a0a0e;
+  --hover-bg: #1a1a20;
+  --active-bg: rgba(201,169,110,0.1);
+  --active-text: #c9a96e;
+  --btn-bg: #141418;
+  --code-bg: rgba(201,169,110,0.08);
+  --pre-bg: #17171c;
+  --blockquote-bg: rgba(201,169,110,0.04);
+  --th-bg: #141418;
+  --tr-even-bg: #111114;
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="editorial"]:not([data-mode]) {
+    --bg: #faf8f4;
+    --bg-subtle: #f0ede6;
+    --surface-elevated: #f5f2ea;
+    --ink: #1a1815;
+    --ink-body: #4a4640;
+    --ink-soft: #8a8580;
+    --border: rgba(0,0,0,0.08);
+    --link: #8b6914;
+    --accent: #8b6914;
+    --accent-dim: #d4cab2;
+    --accent-bg: rgba(139,105,20,0.05);
+    --accent-border: rgba(139,105,20,0.15);
+    --sidebar-bg: #f5f2eb;
+    --hover-bg: #edeae2;
+    --active-bg: rgba(139,105,20,0.08);
+    --active-text: #8b6914;
+    --btn-bg: #faf8f4;
+    --code-bg: rgba(139,105,20,0.06);
+    --pre-bg: #f5f2ea;
+    --blockquote-bg: rgba(139,105,20,0.04);
+    --th-bg: #f0ede6;
+    --tr-even-bg: #f7f5ef;
+  }
+}
+
+/* ── Editorial typography ── */
+body { font-family: var(--font-body); }
+.sidebar, .toolbar { font-family: var(--font-sans); }
+
+[data-theme="editorial"] .content-inner { font-size: 1.08rem; line-height: 1.85; }
+
+[data-theme="editorial"] .content-inner h1,
+[data-theme="editorial"] .content-inner h2,
+[data-theme="editorial"] .content-inner h3,
+[data-theme="editorial"] .content-inner h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+[data-theme="editorial"] .content-inner h1 { font-size: 2.6rem; font-weight: 800; margin-top: 56px; }
+[data-theme="editorial"] .content-inner h2 { font-size: 1.8rem; font-weight: 800; border-bottom: none; margin-top: 56px; }
+[data-theme="editorial"] .content-inner h3 { font-size: 1.3rem; font-weight: 700; }
+
+/* h1 gets a gold accent bar above */
+[data-theme="editorial"] .content-inner h1::before {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: var(--accent);
+  margin-bottom: 18px;
+  border-radius: 2px;
+}
+
+/* h2 gets an uppercase "Section" label */
+[data-theme="editorial"] .content-inner h2::before {
+  content: "Section";
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-family: var(--font-sans);
+}
+
+/* Inline code */
+[data-theme="editorial"] .content-inner code {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+/* Code blocks */
+[data-theme="editorial"] .code-block-wrapper {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+}
+
+[data-theme="editorial"] .code-block-header {
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="editorial"] .code-lang {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+[data-theme="editorial"] .code-copy-btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border: 1px solid var(--border) !important;
+  border-radius: 5px !important;
+  padding: 3px 10px !important;
+}
+
+/* Blockquote — editorial pull quote with decorative mark */
+[data-theme="editorial"] .content-inner blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-bg);
+  border-radius: 0 8px 8px 0;
+  padding: 20px 24px;
+  position: relative;
+  font-style: italic;
+}
+
+[data-theme="editorial"] .content-inner blockquote::before {
+  content: "\201C";
+  position: absolute;
+  top: -6px;
+  left: 14px;
+  font-size: 2.4rem;
+  color: var(--accent-dim);
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+/* Lists — numbered items get accent badges */
+[data-theme="editorial"] .content-inner ol li::marker {
+  color: var(--accent);
+  font-weight: 700;
+  font-family: var(--font-sans);
+}
+
+[data-theme="editorial"] .content-inner ul li::marker {
+  color: var(--accent);
+}
+
+/* Links */
+[data-theme="editorial"] .content-inner a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-border);
+  transition: border-color 0.2s;
+}
+[data-theme="editorial"] .content-inner a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* Table */
+[data-theme="editorial"] .content-inner table {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+[data-theme="editorial"] .content-inner th {
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-bottom: 2px solid var(--accent-border);
+}
+[data-theme="editorial"] .content-inner tr:nth-child(even) {
+  background: var(--accent-bg);
+}
+
+/* HR — ornamental dots */
+[data-theme="editorial"] .content-inner hr {
+  border: none;
+  margin: 44px auto;
+  text-align: center;
+  height: auto;
+  background: none;
+}
+[data-theme="editorial"] .content-inner hr::after {
+  content: "· · ·";
+  display: block;
+  font-size: 1.2rem;
+  letter-spacing: 0.5em;
+  color: var(--accent-dim);
+}
+
+/* Bold text */
+[data-theme="editorial"] .content-inner strong { color: var(--ink); }
+
+/* Line numbers hidden in editorial */
+[data-theme="editorial"] .code-line-numbers { display: none; }

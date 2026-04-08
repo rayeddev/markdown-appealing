@@ -1,62 +1,201 @@
-/* ===== Clean Theme — Modern, airy, polished ===== */
+/* ===== Clean Theme — Airy minimalism, Inter + Literata ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,wght@0,400;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
 
 [data-theme="clean"] {
   --bg: #ffffff;
-  --text: #1a1a2e;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --link: #2563eb;
-  --accent: #3b82f6;
-  --sidebar-bg: #f9fafb;
-  --hover-bg: #f3f4f6;
-  --active-bg: #dbeafe;
-  --active-text: #1d4ed8;
+  --bg-subtle: #f5f5f7;
+  --surface-elevated: #f8f8fa;
+  --ink: #111111;
+  --ink-body: #555555;
+  --ink-soft: #aaaaaa;
+  --border: rgba(0,0,0,0.06);
+  --link: #3b5cff;
+  --accent: #3b5cff;
+  --accent-dim: #c8d4ff;
+  --accent-bg: rgba(59,92,255,0.04);
+  --accent-border: rgba(59,92,255,0.12);
+  --sidebar-bg: #f9f9fb;
+  --hover-bg: #f0f0f3;
+  --active-bg: rgba(59,92,255,0.08);
+  --active-text: #3b5cff;
   --btn-bg: #ffffff;
-  --code-bg: #f3f4f6;
-  --pre-bg: #f8fafc;
-  --blockquote-bg: #f0f9ff;
-  --th-bg: #f9fafb;
+  --code-bg: rgba(59,92,255,0.04);
+  --pre-bg: #f8f8fa;
+  --blockquote-bg: rgba(59,92,255,0.03);
+  --th-bg: #f5f5f7;
   --tr-even-bg: #fafafa;
 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Literata', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
 }
 
-[data-theme="clean"][data-mode="dark"] {
-  --bg: #0f172a;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --border: #1e293b;
-  --link: #60a5fa;
-  --accent: #3b82f6;
-  --sidebar-bg: #0b1120;
-  --hover-bg: #1e293b;
-  --active-bg: #1e3a5f;
-  --active-text: #93c5fd;
-  --btn-bg: #1e293b;
-  --code-bg: #1e293b;
-  --pre-bg: #0f172a;
-  --blockquote-bg: #0c1929;
-  --th-bg: #1e293b;
-  --tr-even-bg: #131c2e;
+[data-theme="clean"][data-mode="dark"],
+[data-theme="clean"]:not([data-mode]) {
+  --bg: #111113;
+  --bg-subtle: #19191d;
+  --surface-elevated: #16161a;
+  --ink: #ececec;
+  --ink-body: #a0a0a8;
+  --ink-soft: #5c5c66;
+  --border: rgba(255,255,255,0.06);
+  --link: #6c8cff;
+  --accent: #6c8cff;
+  --accent-dim: #2a3050;
+  --accent-bg: rgba(108,140,255,0.06);
+  --accent-border: rgba(108,140,255,0.15);
+  --sidebar-bg: #0f0f12;
+  --hover-bg: #1e1e24;
+  --active-bg: rgba(108,140,255,0.1);
+  --active-text: #6c8cff;
+  --btn-bg: #19191d;
+  --code-bg: rgba(108,140,255,0.08);
+  --pre-bg: #16161a;
+  --blockquote-bg: rgba(108,140,255,0.04);
+  --th-bg: #19191d;
+  --tr-even-bg: #141417;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   [data-theme="clean"]:not([data-mode]) {
-    --bg: #0f172a;
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --border: #1e293b;
-    --link: #60a5fa;
-    --accent: #3b82f6;
-    --sidebar-bg: #0b1120;
-    --hover-bg: #1e293b;
-    --active-bg: #1e3a5f;
-    --active-text: #93c5fd;
-    --btn-bg: #1e293b;
-    --code-bg: #1e293b;
-    --pre-bg: #0f172a;
-    --blockquote-bg: #0c1929;
-    --th-bg: #1e293b;
-    --tr-even-bg: #131c2e;
+    --bg: #ffffff;
+    --bg-subtle: #f5f5f7;
+    --surface-elevated: #f8f8fa;
+    --ink: #111111;
+    --ink-body: #555555;
+    --ink-soft: #aaaaaa;
+    --border: rgba(0,0,0,0.06);
+    --link: #3b5cff;
+    --accent: #3b5cff;
+    --accent-dim: #c8d4ff;
+    --accent-bg: rgba(59,92,255,0.04);
+    --accent-border: rgba(59,92,255,0.12);
+    --sidebar-bg: #f9f9fb;
+    --hover-bg: #f0f0f3;
+    --active-bg: rgba(59,92,255,0.08);
+    --active-text: #3b5cff;
+    --btn-bg: #ffffff;
+    --code-bg: rgba(59,92,255,0.04);
+    --pre-bg: #f8f8fa;
+    --blockquote-bg: rgba(59,92,255,0.03);
+    --th-bg: #f5f5f7;
+    --tr-even-bg: #fafafa;
   }
 }
+
+/* ── Clean typography ── */
+body { font-family: var(--font-body); }
+.sidebar, .toolbar { font-family: var(--font-sans); }
+
+[data-theme="clean"] .content-inner { font-size: 1.05rem; line-height: 1.85; }
+
+[data-theme="clean"] .content-inner h1,
+[data-theme="clean"] .content-inner h2,
+[data-theme="clean"] .content-inner h3,
+[data-theme="clean"] .content-inner h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+[data-theme="clean"] .content-inner h1 { font-size: 2.2rem; font-weight: 800; }
+[data-theme="clean"] .content-inner h2 { font-size: 1.5rem; font-weight: 800; border-bottom: none; }
+[data-theme="clean"] .content-inner h3 { font-size: 1.15rem; font-weight: 700; }
+
+/* h1 gets a subtle divider below */
+[data-theme="clean"] .content-inner h1::after {
+  content: "";
+  display: block;
+  margin-top: 16px;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Inline code */
+[data-theme="clean"] .content-inner code {
+  background: var(--code-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+/* Code blocks */
+[data-theme="clean"] .code-block-wrapper {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+}
+
+[data-theme="clean"] .code-block-header {
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="clean"] .code-lang {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+[data-theme="clean"] .code-copy-btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+/* Blockquote */
+[data-theme="clean"] .content-inner blockquote {
+  border-left: 2px solid var(--accent);
+  background: var(--accent-bg);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+/* Lists */
+[data-theme="clean"] .content-inner li::marker {
+  color: var(--ink-soft);
+}
+
+/* Links */
+[data-theme="clean"] .content-inner a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--accent-border);
+  transition: border-color 0.2s;
+}
+[data-theme="clean"] .content-inner a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* Table */
+[data-theme="clean"] .content-inner table {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+[data-theme="clean"] .content-inner th {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  background: var(--surface-elevated);
+}
+
+/* HR — simple thin centered line */
+[data-theme="clean"] .content-inner hr {
+  border: none;
+  margin: 48px auto;
+  width: 60px;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Bold text pops */
+[data-theme="clean"] .content-inner strong { color: var(--ink); }
+
+/* Line numbers hidden in clean */
+[data-theme="clean"] .code-line-numbers { display: none; }

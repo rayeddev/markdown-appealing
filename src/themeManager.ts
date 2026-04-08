@@ -1,4 +1,4 @@
-const AVAILABLE_THEMES = ['clean', 'simple', 'terminal'] as const;
+const AVAILABLE_THEMES = ['clean', 'editorial', 'terminal'] as const;
 export type ThemeName = (typeof AVAILABLE_THEMES)[number];
 
 export class ThemeManager {
