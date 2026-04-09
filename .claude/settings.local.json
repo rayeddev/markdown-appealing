@@ -6,7 +6,13 @@
       "Bash(npx tsc:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m 'scaffold markdown-appealing vscode extension:*)"
+      "Bash(brew list:*)",
+      "Bash(gh auth:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(gh repo:*)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)"
     ]
   }
 }
