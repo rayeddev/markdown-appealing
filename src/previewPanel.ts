@@ -79,6 +79,12 @@ export class PreviewPanel {
     const cleanCss = this.loadThemeCss('clean');
     const editorialCss = this.loadThemeCss('editorial');
     const terminalCss = this.loadThemeCss('terminal');
+
+    // Read VS Code's editor font for code blocks
+    const editorConfig = vscode.workspace.getConfiguration('editor');
+    const editorFontFamily = editorConfig.get<string>('fontFamily') ?? '';
+    const editorFontSize = editorConfig.get<number>('fontSize') ?? 14;
+
     const currentTheme = this.themeManager.getTheme();
     const darkMode = this.themeManager.isDark();
     const darkModeAttr =
@@ -100,6 +106,8 @@ export class PreviewPanel {
       --sidebar-width: 240px;
       --content-max-width: 100%;
       --pad: 2rem 3.5rem;
+      --editor-font: ${editorFontFamily || "'SF Mono', Consolas, monospace"};
+      --editor-font-size: ${editorFontSize * 0.92}px;
     }
 
     html, body { height: 100%; }
@@ -471,7 +479,7 @@ export class PreviewPanel {
     }
 
     .content-inner code {
-      font-family: var(--font-mono, 'SF Mono', monospace);
+      font-family: var(--editor-font), var(--font-mono, monospace);
       background: var(--code-bg);
       padding: 0.15em 0.4em;
       border-radius: 3px;
@@ -481,8 +489,8 @@ export class PreviewPanel {
     .content-inner pre {
       margin: 0;
       padding: 12px 16px;
-      font-family: var(--font-mono, 'SF Mono', monospace);
-      font-size: 0.84rem;
+      font-family: var(--editor-font), var(--font-mono, monospace);
+      font-size: var(--editor-font-size, 0.84rem);
       line-height: 1.75;
       color: var(--ink-body);
       overflow-x: auto;
