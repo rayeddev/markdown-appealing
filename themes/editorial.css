@@ -2,7 +2,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-[data-theme="editorial"] {
+/* ── Light palette ── */
+[data-theme="editorial"][data-mode="light"] {
   --bg: #faf8f4;
   --bg-subtle: #f0ede6;
   --surface-elevated: #f5f2ea;
@@ -32,8 +33,8 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 }
 
-[data-theme="editorial"][data-mode="dark"],
-[data-theme="editorial"]:not([data-mode]) {
+/* ── Dark palette ── */
+[data-theme="editorial"][data-mode="dark"] {
   --bg: #0c0c10;
   --bg-subtle: #141418;
   --surface-elevated: #17171c;
@@ -56,8 +57,14 @@
   --blockquote-bg: rgba(201,169,110,0.04);
   --th-bg: #141418;
   --tr-even-bg: #111114;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 }
 
+/* ── System preference (no explicit mode) ── */
 @media (prefers-color-scheme: light) {
   [data-theme="editorial"]:not([data-mode]) {
     --bg: #faf8f4;
@@ -82,6 +89,43 @@
     --blockquote-bg: rgba(139,105,20,0.04);
     --th-bg: #f0ede6;
     --tr-even-bg: #f7f5ef;
+
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="editorial"]:not([data-mode]) {
+    --bg: #0c0c10;
+    --bg-subtle: #141418;
+    --surface-elevated: #17171c;
+    --ink: #e4e2de;
+    --ink-body: #a8a5a0;
+    --ink-soft: #6e6b66;
+    --border: rgba(201,169,110,0.12);
+    --link: #c9a96e;
+    --accent: #c9a96e;
+    --accent-dim: #4a4535;
+    --accent-bg: rgba(201,169,110,0.07);
+    --accent-border: rgba(201,169,110,0.25);
+    --sidebar-bg: #0a0a0e;
+    --hover-bg: #1a1a20;
+    --active-bg: rgba(201,169,110,0.1);
+    --active-text: #c9a96e;
+    --btn-bg: #141418;
+    --code-bg: rgba(201,169,110,0.08);
+    --pre-bg: #17171c;
+    --blockquote-bg: rgba(201,169,110,0.04);
+    --th-bg: #141418;
+    --tr-even-bg: #111114;
+
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
   }
 }
 
@@ -235,7 +279,7 @@ body { font-family: var(--font-body); }
   background: none;
 }
 [data-theme="editorial"] .content-inner hr::after {
-  content: "· · ·";
+  content: "\00B7 \00B7 \00B7";
   display: block;
   font-size: 1.2rem;
   letter-spacing: 0.5em;
