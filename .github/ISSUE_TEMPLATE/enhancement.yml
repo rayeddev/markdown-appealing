@@ -1,0 +1,32 @@
+name: Enhancement
+description: Improve existing behavior
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What to improve
+      description: Which existing feature and what changes?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What's the benefit or pain point?
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: Approach
+      description: Implementation notes or constraints
+  - type: dropdown
+    id: pipeline
+    attributes:
+      label: Pipeline
+      options:
+        - "shaping"
+        - "todo"
+    validations:
+      required: true

@@ -1,0 +1,35 @@
+name: Roadmap
+description: Strategic milestone or epic
+labels: ["roadmap"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What milestone or outcome does this represent?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Key deliverables or sub-issues
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why now? Dependencies, constraints, or related decisions
+  - type: dropdown
+    id: pipeline
+    attributes:
+      label: Pipeline
+      options:
+        - "shaping"
+        - "todo"
+    validations:
+      required: true

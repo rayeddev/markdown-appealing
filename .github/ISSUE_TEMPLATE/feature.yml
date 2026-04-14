@@ -1,0 +1,33 @@
+name: Feature
+description: New capability or behavior
+labels: ["feature"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: What should the extension do?
+      placeholder: Describe the feature clearly
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What problem does this solve or what value does it add?
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: Approach
+      description: Implementation notes, constraints, or design direction
+  - type: dropdown
+    id: pipeline
+    attributes:
+      label: Pipeline
+      options:
+        - "shaping"
+        - "todo"
+    validations:
+      required: true
