@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2026-04-14
+
+### Added
+- Font customization settings: body font, heading font, code font, body size, code size (#3)
+- Live preview re-render on font setting changes
+
 ## [0.1.2] - 2026-04-14
 
 ### Fixed
