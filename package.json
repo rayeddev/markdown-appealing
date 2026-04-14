@@ -2,7 +2,7 @@
   "name": "markdown-appealing",
   "displayName": "Markdown Appealing",
   "description": "Beautiful markdown preview with multiple themes, dark/light toggle, and sidebar table of contents navigation.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "rayeddev",
   "repository": {
     "type": "git",
