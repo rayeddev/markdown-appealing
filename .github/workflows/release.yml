@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -20,6 +23,12 @@ jobs:
         with:
           name: markdown-appealing
           path: "*.vsix"
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.vsix"
+          generate_release_notes: false
+          body_path: .release-notes.md
       - name: Publish to Marketplace
         if: env.VSCE_PAT != ''
         run: npx vsce publish
