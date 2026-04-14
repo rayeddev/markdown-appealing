@@ -35,6 +35,40 @@
         "title": "Markdown Appealing: Toggle Dark/Light Mode"
       }
     ],
+    "configuration": {
+      "title": "Markdown Appealing",
+      "properties": {
+        "markdownAppealing.fontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family for body text in the preview. Leave empty to use theme default."
+        },
+        "markdownAppealing.headingFontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family for headings in the preview. Leave empty to use theme default."
+        },
+        "markdownAppealing.codeFontFamily": {
+          "type": "string",
+          "default": "",
+          "description": "Font family for code blocks in the preview. Leave empty to use editor.fontFamily."
+        },
+        "markdownAppealing.fontSize": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 40,
+          "description": "Font size in pixels for body text. Set to 0 to use theme default."
+        },
+        "markdownAppealing.codeFontSize": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 40,
+          "description": "Font size in pixels for code blocks. Set to 0 to use editor font size."
+        }
+      }
+    },
     "keybindings": [
       {
         "command": "markdownAppealing.openPreview",

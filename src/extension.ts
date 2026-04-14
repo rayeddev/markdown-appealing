@@ -37,6 +37,18 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // Re-render when extension font settings change
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('markdownAppealing') && PreviewPanel.currentPanel) {
+        const editor = vscode.window.activeTextEditor;
+        if (editor?.document.languageId === 'markdown') {
+          PreviewPanel.currentPanel.update(editor.document);
+        }
+      }
+    })
+  );
+
   // Live update on text change
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((e) => {

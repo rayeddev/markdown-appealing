@@ -133,7 +133,7 @@
 body { font-family: var(--font-body); }
 .sidebar, .toolbar { font-family: var(--font-sans); }
 
-[data-theme="editorial"] .content-inner { font-size: 1.08rem; line-height: 1.85; }
+[data-theme="editorial"] .content-inner { font-size: var(--body-font-size, 1.08rem); line-height: 1.85; }
 
 [data-theme="editorial"] .content-inner h1,
 [data-theme="editorial"] .content-inner h2,
