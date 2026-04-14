@@ -2,7 +2,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,wght@0,400;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
 
-[data-theme="clean"] {
+/* ── Light palette ── */
+[data-theme="clean"][data-mode="light"] {
   --bg: #ffffff;
   --bg-subtle: #f5f5f7;
   --surface-elevated: #f8f8fa;
@@ -32,8 +33,8 @@
   --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
 }
 
-[data-theme="clean"][data-mode="dark"],
-[data-theme="clean"]:not([data-mode]) {
+/* ── Dark palette ── */
+[data-theme="clean"][data-mode="dark"] {
   --bg: #111113;
   --bg-subtle: #19191d;
   --surface-elevated: #16161a;
@@ -56,8 +57,14 @@
   --blockquote-bg: rgba(108,140,255,0.04);
   --th-bg: #19191d;
   --tr-even-bg: #141417;
+
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Literata', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
 }
 
+/* ── System preference (no explicit mode) ── */
 @media (prefers-color-scheme: light) {
   [data-theme="clean"]:not([data-mode]) {
     --bg: #ffffff;
@@ -82,6 +89,43 @@
     --blockquote-bg: rgba(59,92,255,0.03);
     --th-bg: #f5f5f7;
     --tr-even-bg: #fafafa;
+
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Literata', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="clean"]:not([data-mode]) {
+    --bg: #111113;
+    --bg-subtle: #19191d;
+    --surface-elevated: #16161a;
+    --ink: #ececec;
+    --ink-body: #a0a0a8;
+    --ink-soft: #5c5c66;
+    --border: rgba(255,255,255,0.06);
+    --link: #6c8cff;
+    --accent: #6c8cff;
+    --accent-dim: #2a3050;
+    --accent-bg: rgba(108,140,255,0.06);
+    --accent-border: rgba(108,140,255,0.15);
+    --sidebar-bg: #0f0f12;
+    --hover-bg: #1e1e24;
+    --active-bg: rgba(108,140,255,0.1);
+    --active-text: #6c8cff;
+    --btn-bg: #19191d;
+    --code-bg: rgba(108,140,255,0.08);
+    --pre-bg: #16161a;
+    --blockquote-bg: rgba(108,140,255,0.04);
+    --th-bg: #19191d;
+    --tr-even-bg: #141417;
+
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Literata', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
   }
 }
 

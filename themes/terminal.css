@@ -2,7 +2,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-[data-theme="terminal"] {
+/* ── Light palette ── */
+[data-theme="terminal"][data-mode="light"] {
   --bg: #f6f8fa;
   --bg-subtle: #ebeef2;
   --surface-elevated: #eef1f5;
@@ -32,8 +33,8 @@
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 }
 
-[data-theme="terminal"][data-mode="dark"],
-[data-theme="terminal"]:not([data-mode]) {
+/* ── Dark palette ── */
+[data-theme="terminal"][data-mode="dark"] {
   --bg: #0a0e14;
   --bg-subtle: #0f1319;
   --surface-elevated: #0d1117;
@@ -56,8 +57,14 @@
   --blockquote-bg: rgba(57,211,83,0.03);
   --th-bg: #0f1319;
   --tr-even-bg: #0b0f15;
+
+  --font-display: 'IBM Plex Mono', monospace;
+  --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 }
 
+/* ── System preference (no explicit mode) ── */
 @media (prefers-color-scheme: light) {
   [data-theme="terminal"]:not([data-mode]) {
     --bg: #f6f8fa;
@@ -82,6 +89,43 @@
     --blockquote-bg: rgba(22,163,74,0.04);
     --th-bg: #ebeef2;
     --tr-even-bg: #f0f2f6;
+
+    --font-display: 'IBM Plex Mono', monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="terminal"]:not([data-mode]) {
+    --bg: #0a0e14;
+    --bg-subtle: #0f1319;
+    --surface-elevated: #0d1117;
+    --ink: #c5d0de;
+    --ink-body: #8b98ab;
+    --ink-soft: #4a5568;
+    --border: rgba(57,211,83,0.12);
+    --link: #39d353;
+    --accent: #39d353;
+    --accent-dim: #1a3a22;
+    --accent-bg: rgba(57,211,83,0.05);
+    --accent-border: rgba(57,211,83,0.18);
+    --sidebar-bg: #080c10;
+    --hover-bg: #131920;
+    --active-bg: rgba(57,211,83,0.08);
+    --active-text: #39d353;
+    --btn-bg: #0f1319;
+    --code-bg: rgba(57,211,83,0.06);
+    --pre-bg: #0d1117;
+    --blockquote-bg: rgba(57,211,83,0.03);
+    --th-bg: #0f1319;
+    --tr-even-bg: #0b0f15;
+
+    --font-display: 'IBM Plex Mono', monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
   }
 }
 

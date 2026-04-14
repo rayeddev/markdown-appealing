@@ -87,8 +87,11 @@ export class PreviewPanel {
 
     const currentTheme = this.themeManager.getTheme();
     const darkMode = this.themeManager.isDark();
-    const darkModeAttr =
-      darkMode === null ? '' : darkMode ? 'data-mode="dark"' : 'data-mode="light"';
+    // When system mode (null), detect from VS Code's active color theme
+    const vscodeDark = vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.Dark
+      || vscode.window.activeColorTheme.kind === vscode.ColorThemeKind.HighContrast;
+    const effectiveDark = darkMode ?? vscodeDark;
+    const darkModeAttr = effectiveDark ? 'data-mode="dark"' : 'data-mode="light"';
 
     const tocHtml = this.buildTocHtml(toc);
     const tocCount = toc.length;
@@ -733,7 +736,7 @@ export class PreviewPanel {
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc">${this.getThemeDesc(currentTheme)}</span>
-        <button class="dark-toggle ${darkMode === false ? 'is-light' : ''}" id="darkToggle">
+        <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
         </button>
       </div>
@@ -813,22 +816,12 @@ export class PreviewPanel {
     // ===== Dark mode toggle =====
     darkToggle.addEventListener('click', () => {
       const current = html.getAttribute('data-mode');
-      let next;
-      if (!current) { next = 'dark'; }
-      else if (current === 'dark') { next = 'light'; }
-      else { next = null; }
-
-      if (next) {
-        html.setAttribute('data-mode', next);
-      } else {
-        html.removeAttribute('data-mode');
-      }
-
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-mode', next);
       darkToggle.classList.toggle('is-light', next === 'light');
-
       vscode.postMessage({
         type: 'darkModeChanged',
-        darkMode: next === 'dark' ? true : next === 'light' ? false : null,
+        darkMode: next === 'dark',
       });
     });
 
@@ -1115,12 +1108,9 @@ export class PreviewPanel {
         });
         themeDesc.textContent = THEME_DESCS[msg.theme] || '';
       } else if (msg.type === 'setDarkMode') {
-        if (msg.darkMode === null) {
-          html.removeAttribute('data-mode');
-        } else {
-          html.setAttribute('data-mode', msg.darkMode ? 'dark' : 'light');
-        }
-        darkToggle.classList.toggle('is-light', msg.darkMode === false);
+        const mode = msg.darkMode ? 'dark' : 'light';
+        html.setAttribute('data-mode', mode);
+        darkToggle.classList.toggle('is-light', mode === 'light');
       }
     });
   </script>
