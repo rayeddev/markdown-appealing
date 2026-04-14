@@ -85,6 +85,14 @@ export class PreviewPanel {
     const editorFontFamily = editorConfig.get<string>('fontFamily') ?? '';
     const editorFontSize = editorConfig.get<number>('fontSize') ?? 14;
 
+    // Read extension font settings
+    const extConfig = vscode.workspace.getConfiguration('markdownAppealing');
+    const userBodyFont = extConfig.get<string>('fontFamily') ?? '';
+    const userHeadingFont = extConfig.get<string>('headingFontFamily') ?? '';
+    const userCodeFont = extConfig.get<string>('codeFontFamily') ?? '';
+    const userFontSize = extConfig.get<number>('fontSize') ?? 0;
+    const userCodeFontSize = extConfig.get<number>('codeFontSize') ?? 0;
+
     const currentTheme = this.themeManager.getTheme();
     const darkMode = this.themeManager.isDark();
     // When system mode (null), detect from VS Code's active color theme
@@ -109,15 +117,19 @@ export class PreviewPanel {
       --sidebar-width: 240px;
       --content-max-width: 100%;
       --pad: 2rem 3.5rem;
-      --editor-font: ${editorFontFamily || "'SF Mono', Consolas, monospace"};
-      --editor-font-size: ${editorFontSize * 0.92}px;
+      --editor-font: ${userCodeFont || editorFontFamily || "'SF Mono', Consolas, monospace"};
+      --editor-font-size: ${userCodeFontSize ? `${userCodeFontSize}px` : `${editorFontSize * 0.92}px`};
+      ${userBodyFont ? `--font-body: ${userBodyFont};` : ''}
+      ${userBodyFont ? `--font-sans: ${userBodyFont};` : ''}
+      ${userHeadingFont ? `--font-display: ${userHeadingFont};` : ''}
+      ${userFontSize ? `--body-font-size: ${userFontSize}px;` : ''}
     }
 
     html, body { height: 100%; }
 
     body {
       display: flex;
-      font-size: 15px;
+      font-size: var(--body-font-size, 15px);
       line-height: 1.7;
       overflow: hidden;
       background: var(--bg);
