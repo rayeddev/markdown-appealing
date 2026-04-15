@@ -241,5 +241,15 @@ body { font-family: var(--font-body); }
 /* Bold text pops */
 [data-theme="clean"] .content-inner strong { color: var(--ink); }
 
+/* Active heading cursor */
+[data-theme="clean"] .content-inner .heading-active {
+  background: var(--active-bg);
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  margin-left: -15px;
+  border-radius: 0 6px 6px 0;
+  transition: background 150ms ease;
+}
+
 /* Line numbers hidden in clean */
 [data-theme="clean"] .code-line-numbers { display: none; }

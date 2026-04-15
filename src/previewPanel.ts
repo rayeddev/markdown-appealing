@@ -205,7 +205,6 @@ export class PreviewPanel {
     }
 
     .toolbar-right {
-      margin-left: auto;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -712,6 +711,42 @@ export class PreviewPanel {
       border-color: var(--accent);
     }
 
+    /* ===== Navigation hints ===== */
+    .nav-hints {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      font-size: 0.62rem;
+      color: var(--ink-soft);
+      font-family: var(--font-sans, -apple-system, sans-serif);
+      white-space: nowrap;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    .nav-hints:hover {
+      opacity: 0.85;
+    }
+
+    .nav-hints kbd {
+      display: inline-block;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.58rem;
+      font-family: var(--font-mono, monospace);
+      background: var(--surface-elevated, var(--bg-subtle));
+      min-width: 14px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .nav-hints .hint-sep {
+      color: var(--border);
+      margin: 0 1px;
+    }
+
     /* ===== Transitions ===== */
     button { transition: all 0.2s; }
     button:hover { opacity: 0.85; }
@@ -746,8 +781,19 @@ export class PreviewPanel {
         <button data-theme="editorial" class="${currentTheme === 'editorial' ? 'active' : ''}">&#128214; Editorial</button>
         <button data-theme="terminal" class="${currentTheme === 'terminal' ? 'active' : ''}">&#9000; Terminal</button>
       </div>
+      <div class="nav-hints">
+        <kbd>j</kbd><kbd>k</kbd> navigate
+        <span class="hint-sep">&middot;</span>
+        <kbd>gg</kbd> top
+        <span class="hint-sep">&middot;</span>
+        <kbd>G</kbd> bottom
+        <span class="hint-sep">&middot;</span>
+        <kbd>[</kbd><kbd>]</kbd> siblings
+        <span class="hint-sep">&middot;</span>
+        <kbd>/</kbd> search
+      </div>
       <div class="toolbar-right">
-        <span class="theme-desc" id="themeDesc">${this.getThemeDesc(currentTheme)}</span>
+        <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
         <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
         </button>
@@ -797,6 +843,12 @@ export class PreviewPanel {
 
     let isCollapsed = false;
     const tocCount = ${tocCount};
+
+    // ===== Keyboard navigation state =====
+    let cursorIndex = -1;
+    let isNavigating = false;
+    let lastGPress = 0;
+    let navScrollTimeout = null;
 
     // ===== Copy code =====
     window.copyCode = function(btn) {
@@ -854,15 +906,21 @@ export class PreviewPanel {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isNavigating) return;
         const visible = entries.filter(e => e.isIntersecting);
         if (visible.length > 0) {
           visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
           const newId = visible[0].target.id;
           if (newId && newId !== activeId) {
             activeId = newId;
+            cursorIndex = Array.from(headings).findIndex(h => h.id === newId);
+            // Update heading highlight
+            headings.forEach(h => h.classList.remove('heading-active'));
+            if (cursorIndex >= 0) headings[cursorIndex].classList.add('heading-active');
             updateTocActive(newId);
             updateProgress(newId);
             updateCollapsedDots(newId);
+            vscode.setState({ activeHeadingId: newId });
           }
         }
       },
@@ -871,11 +929,60 @@ export class PreviewPanel {
 
     headings.forEach(h => { if (h.id) observer.observe(h); });
 
-    // Init active to first heading
-    if (headings.length > 0 && headings[0].id) {
-      activeId = headings[0].id;
+    // ===== Cursor management =====
+    function setCursor(index) {
+      if (index < 0 || index >= headings.length) return;
+      // Remove previous highlight
+      if (cursorIndex >= 0 && cursorIndex < headings.length) {
+        headings[cursorIndex].classList.remove('heading-active');
+      }
+      cursorIndex = index;
+      activeId = headings[cursorIndex].id;
+      headings[cursorIndex].classList.add('heading-active');
       updateTocActive(activeId);
+      updateProgress(activeId);
+      updateCollapsedDots(activeId);
+      // Auto-scroll TOC sidebar to keep active entry visible
+      const activeTocLink = document.querySelector('.toc-link[data-id="' + activeId + '"]');
+      if (activeTocLink) activeTocLink.scrollIntoView({ block: 'nearest' });
+      // Persist cursor
+      vscode.setState({ activeHeadingId: activeId });
+      // Smooth scroll to heading with suppression
+      isNavigating = true;
+      navigateTo(activeId);
+      clearTimeout(navScrollTimeout);
+      navScrollTimeout = setTimeout(() => { isNavigating = false; }, 500);
     }
+
+    // Clear isNavigating on scrollend (if supported), fallback is the setTimeout in setCursor
+    contentArea.addEventListener('scrollend', () => {
+      if (isNavigating) {
+        isNavigating = false;
+        clearTimeout(navScrollTimeout);
+      }
+    });
+
+    // Init cursor from persisted state or first heading
+    (function initCursor() {
+      if (headings.length === 0) { cursorIndex = -1; return; }
+      const saved = vscode.getState();
+      if (saved && saved.activeHeadingId) {
+        const idx = Array.from(headings).findIndex(h => h.id === saved.activeHeadingId);
+        if (idx >= 0) {
+          cursorIndex = idx;
+        } else {
+          cursorIndex = 0;
+        }
+      } else {
+        cursorIndex = 0;
+      }
+      activeId = headings[cursorIndex].id;
+      headings[cursorIndex].classList.add('heading-active');
+      updateTocActive(activeId);
+      updateProgress(activeId);
+      updateCollapsedDots(activeId);
+      vscode.setState({ activeHeadingId: activeId });
+    })();
 
     function updateTocActive(id) {
       document.querySelectorAll('.toc-link').forEach(link => {
@@ -923,7 +1030,10 @@ export class PreviewPanel {
         const dot = e.target.closest('.collapsed-dot');
         if (!dot) return;
         const id = dot.getAttribute('data-id');
-        navigateTo(id);
+        if (id) {
+          const idx = Array.from(headings).findIndex(h => h.id === id);
+          if (idx >= 0) setCursor(idx);
+        }
       });
     })();
 
@@ -949,7 +1059,10 @@ export class PreviewPanel {
       if (!link) return;
       e.preventDefault();
       const id = link.getAttribute('data-id');
-      if (id) navigateTo(id);
+      if (id) {
+        const idx = Array.from(headings).findIndex(h => h.id === id);
+        if (idx >= 0) setCursor(idx);
+      }
     });
 
     // ===== Search =====
@@ -972,7 +1085,8 @@ export class PreviewPanel {
       searchOverlay.classList.add('open');
       searchInput.value = '';
       searchMeta.textContent = '';
-      searchInput.focus();
+      // Delay focus to ensure overlay is visible and VS Code chord handler has settled
+      requestAnimationFrame(() => searchInput.focus());
     }
 
     function closeSearch() {
@@ -1095,8 +1209,9 @@ export class PreviewPanel {
       if (e.target === searchOverlay) closeSearch();
     });
 
-    // Cmd+K / Ctrl+K to open search
+    // Cmd+K / Ctrl+K to open search + keyboard navigation
     document.addEventListener('keydown', (e) => {
+      // Search shortcut always takes priority
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         if (searchOverlay.classList.contains('open')) {
@@ -1104,9 +1219,74 @@ export class PreviewPanel {
         } else {
           openSearch();
         }
+        return;
       }
       if (e.key === 'Escape' && searchOverlay.classList.contains('open')) {
         closeSearch();
+        return;
+      }
+
+      // ===== Keyboard navigation =====
+      // Skip if focus is in input, textarea, contenteditable, or search overlay is open
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+      if (searchOverlay.classList.contains('open')) return;
+
+      // / opens search (vim-style, avoids Cmd+K chord conflict)
+      if (e.key === '/') {
+        e.preventDefault();
+        openSearch();
+        return;
+      }
+
+      // Skip if no headings or modifier keys are held
+      if (headings.length === 0) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      const key = e.key;
+
+      if (key === 'j') {
+        e.preventDefault();
+        lastGPress = 0;
+        setCursor(Math.min(cursorIndex + 1, headings.length - 1));
+      } else if (key === 'k') {
+        e.preventDefault();
+        lastGPress = 0;
+        setCursor(Math.max(cursorIndex - 1, 0));
+      } else if (key === 'G') {
+        e.preventDefault();
+        lastGPress = 0;
+        setCursor(headings.length - 1);
+      } else if (key === 'g') {
+        e.preventDefault();
+        const now = Date.now();
+        if (lastGPress > 0 && now - lastGPress < 300) {
+          lastGPress = 0;
+          setCursor(0);
+        } else {
+          lastGPress = now;
+        }
+      } else if (key === ']') {
+        e.preventDefault();
+        lastGPress = 0;
+        if (cursorIndex >= 0) {
+          const currentTag = headings[cursorIndex].tagName;
+          for (let i = cursorIndex + 1; i < headings.length; i++) {
+            if (headings[i].tagName === currentTag) { setCursor(i); break; }
+          }
+        }
+      } else if (key === '[') {
+        e.preventDefault();
+        lastGPress = 0;
+        if (cursorIndex >= 0) {
+          const currentTag = headings[cursorIndex].tagName;
+          for (let i = cursorIndex - 1; i >= 0; i--) {
+            if (headings[i].tagName === currentTag) { setCursor(i); break; }
+          }
+        }
+      } else {
+        // Any non-navigation key clears the gg timer
+        lastGPress = 0;
       }
     });
 
