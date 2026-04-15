@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0] - 2026-04-15
+
+### Added
+- YAML frontmatter rendered as a clean metadata card at the top of the preview
+- Two-column key-value layout with row separators and quote stripping
+- Per-theme card styling: rounded clean, accent-bordered editorial, dashed monospace terminal
+
 ## [0.3.0] - 2026-04-15
 
 ### Added
