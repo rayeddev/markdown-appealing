@@ -309,5 +309,12 @@ body { font-family: var(--font-body); }
   font-family: var(--font-body);
 }
 
+/* Mermaid card */
+[data-theme="editorial"] .mermaid-card {
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-elevated);
+}
+
 /* Line numbers hidden in editorial */
 [data-theme="editorial"] .code-line-numbers { display: none; }

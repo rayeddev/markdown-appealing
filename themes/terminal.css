@@ -344,6 +344,16 @@ body { font-family: var(--font-body); }
   font-family: var(--font-mono);
 }
 
+/* Mermaid card */
+[data-theme="terminal"] .mermaid-card {
+  border: 1px dashed var(--accent-border);
+  border-radius: 0;
+  background: var(--surface-elevated);
+}
+[data-theme="terminal"] .mermaid-error {
+  font-family: var(--font-mono);
+}
+
 /* Sidebar — > prefix on links */
 [data-theme="terminal"] .sidebar .toc-link::before {
   content: "> ";

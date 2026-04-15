@@ -1,3 +1,12 @@
+---
+title: Building Context-Aware AI Agents
+author: Raed Ali
+version: 2.0
+status: published
+date: 2026-04-15
+tags: ai, agents, architecture, markdown
+---
+
 # Building Context-Aware AI Agents
 
 Modern AI agents rely on **structured context** to maintain coherence across long interactions. This guide covers the architecture patterns that actually work in production.
@@ -32,12 +41,46 @@ function buildPrompt(ctx: AgentContext): string {
 
 The key insight: every piece of context is just a `string` that gets concatenated. Markdown headings create natural **attention boundaries** that help the model organize information.
 
+### Agent Request Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant Memory
+    participant LLM
+
+    User->>Agent: Send message
+    Agent->>Memory: Retrieve context
+    Memory-->>Agent: Relevant chunks
+    Agent->>Agent: Build prompt
+    Agent->>LLM: Send prompt
+    LLM-->>Agent: Response
+    Agent->>Memory: Store interaction
+    Agent-->>User: Formatted response
+```
+
 ## Context Management Patterns
 
 - **Sliding window** — keep the last N messages, summarize the rest
 - **RAG injection** — retrieve relevant chunks and insert before the query
 - **Hierarchical context** — system > project > task > conversation
 - **Compression** — periodically ask the model to summarize its own context
+
+### Pattern Decision Tree
+
+```mermaid
+flowchart TD
+    A[New message arrives] --> B{Context window full?}
+    B -->|No| C[Append to history]
+    B -->|Yes| D{Has relevant docs?}
+    D -->|Yes| E[RAG: inject chunks]
+    D -->|No| F[Sliding window: trim old]
+    E --> G[Build prompt]
+    F --> G
+    C --> G
+    G --> H[Send to LLM]
+```
 
 ## Performance Comparison
 
@@ -49,6 +92,20 @@ The key insight: every piece of context is just a `string` that gets concatenate
 | Hierarchical | Medium | Best | $$ |
 
 ---
+
+## System Architecture
+
+```mermaid
+graph LR
+    A[Client App] --> B[API Gateway]
+    B --> C[Agent Service]
+    C --> D[Vector DB]
+    C --> E[LLM Provider]
+    C --> F[Tool Registry]
+    F --> G[Code Executor]
+    F --> H[Web Search]
+    F --> I[File System]
+```
 
 ## The Reading Problem
 
@@ -69,6 +126,20 @@ hours_saved_per_week = daily_md_reading_hours * readability_improvement * 5
 # => 3.2 hours/week. That's almost half a workday.
 ```
 
+### Agent State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Processing: receive_message
+    Processing --> Thinking: build_context
+    Thinking --> ToolUse: needs_tool
+    Thinking --> Responding: has_answer
+    ToolUse --> Thinking: tool_result
+    Responding --> Idle: send_response
+    Responding --> [*]: session_end
+```
+
 ### Implementation Tips
 
 When building your own context pipeline, keep these rules in mind:
@@ -78,4 +149,19 @@ When building your own context pipeline, keep these rules in mind:
 - Keep context files under 2000 tokens for optimal retrieval
 - Test with `gpt-4` and `claude-3` to ensure format compatibility
 
-This isn't a nice-to-have. It's a **developer productivity tool**.
+---
+
+## Token Budget Breakdown
+
+```mermaid
+pie title Token Budget Allocation
+    "System Prompt" : 15
+    "Memory/RAG" : 25
+    "Conversation History" : 35
+    "Tool Definitions" : 10
+    "User Message" : 15
+```
+
+## Summary
+
+This isn't a nice-to-have. It's a **developer productivity tool**. The combination of structured frontmatter, clear headings, visual diagrams, and well-formatted code blocks makes complex documentation *actually readable*.

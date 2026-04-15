@@ -79,7 +79,8 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "copy:mermaid": "mkdir -p vendor && cp node_modules/mermaid/dist/mermaid.min.js vendor/mermaid.min.js",
+    "vscode:prepublish": "npm run copy:mermaid && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts"
@@ -92,6 +93,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "markdown-it": "^14.1.0"
+    "markdown-it": "^14.1.0",
+    "mermaid": "^11.14.0"
   }
 }
