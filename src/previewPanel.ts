@@ -784,7 +784,7 @@ export class PreviewPanel {
         <span class="hint-sep">&middot;</span>
         <kbd>[</kbd><kbd>]</kbd> siblings
         <span class="hint-sep">&middot;</span>
-        <kbd>\${navigator.platform?.includes('Mac') ? '&#8984;' : 'Ctrl+'}K</kbd> search
+        <kbd>${process.platform === 'darwin' ? '&#8984;' : 'Ctrl+'}K</kbd> search
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc">${this.getThemeDesc(currentTheme)}</span>
