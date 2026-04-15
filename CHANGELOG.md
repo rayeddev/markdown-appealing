@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0] - 2026-04-15
+
+### Added
+- Mermaid diagram rendering: fenced `mermaid` code blocks render as SVG diagrams
+- Themed card container with light inner background for reliable dark/light mode display
+- Per-diagram error handling with styled "Diagram syntax error" message
+- Per-theme mermaid card styling matching each theme's design language
+- External script loading via `asWebviewUri` for Mermaid.js
+- `.vscodeignore` for optimized VSIX packaging
+- Updated demo with frontmatter + 5 Mermaid diagram types
+
 ## [0.4.0] - 2026-04-15
 
 ### Added
