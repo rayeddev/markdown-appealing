@@ -712,6 +712,35 @@ export class PreviewPanel {
       border-color: var(--accent);
     }
 
+    /* ===== Navigation hints ===== */
+    .nav-hints {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.65rem;
+      color: var(--ink-soft);
+      font-family: var(--font-sans, -apple-system, sans-serif);
+      white-space: nowrap;
+      opacity: 0.7;
+    }
+
+    .nav-hints kbd {
+      display: inline-block;
+      padding: 1px 4px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.6rem;
+      font-family: var(--font-mono, monospace);
+      background: var(--surface-elevated, var(--bg-subtle));
+      min-width: 16px;
+      text-align: center;
+    }
+
+    .nav-hints .hint-sep {
+      color: var(--border);
+      margin: 0 2px;
+    }
+
     /* ===== Transitions ===== */
     button { transition: all 0.2s; }
     button:hover { opacity: 0.85; }
@@ -745,6 +774,17 @@ export class PreviewPanel {
         <button data-theme="clean" class="${currentTheme === 'clean' ? 'active' : ''}">&#10022; Clean</button>
         <button data-theme="editorial" class="${currentTheme === 'editorial' ? 'active' : ''}">&#128214; Editorial</button>
         <button data-theme="terminal" class="${currentTheme === 'terminal' ? 'active' : ''}">&#9000; Terminal</button>
+      </div>
+      <div class="nav-hints">
+        <kbd>j</kbd><kbd>k</kbd> navigate
+        <span class="hint-sep">&middot;</span>
+        <kbd>gg</kbd> top
+        <span class="hint-sep">&middot;</span>
+        <kbd>G</kbd> bottom
+        <span class="hint-sep">&middot;</span>
+        <kbd>[</kbd><kbd>]</kbd> siblings
+        <span class="hint-sep">&middot;</span>
+        <kbd>\${navigator.platform?.includes('Mac') ? '&#8984;' : 'Ctrl+'}K</kbd> search
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc">${this.getThemeDesc(currentTheme)}</span>
