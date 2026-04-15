@@ -49,6 +49,12 @@ md.renderer.rules.fence = (tokens, idx) => {
   const lang = token.info.trim();
   const content = token.content;
   const escaped = escapeHtml(content);
+
+  // Mermaid blocks get a card container instead of a code block
+  if (lang === 'mermaid' || lang.startsWith('mermaid ')) {
+    return `<div class="mermaid-card"><div class="mermaid-render"><pre class="mermaid">${escaped}</pre></div></div>`;
+  }
+
   const lines = content.split('\n');
   // Remove trailing empty line from fence content
   const lineCount = lines[lines.length - 1] === '' ? lines.length - 1 : lines.length;

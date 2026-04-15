@@ -258,5 +258,12 @@ body { font-family: var(--font-body); }
   border: 1px solid var(--border);
 }
 
+/* Mermaid card */
+[data-theme="clean"] .mermaid-card {
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+}
+
 /* Line numbers hidden in clean */
 [data-theme="clean"] .code-line-numbers { display: none; }

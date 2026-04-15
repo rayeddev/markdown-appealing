@@ -38,6 +38,7 @@ export class PreviewPanel {
         localResourceRoots: [
           vscode.Uri.file(path.join(context.extensionPath, 'themes')),
           vscode.Uri.file(path.join(context.extensionPath, 'media')),
+          vscode.Uri.file(path.join(context.extensionPath, 'vendor')),
         ],
       },
     );
@@ -98,6 +99,11 @@ export class PreviewPanel {
     const cleanCss = this.loadThemeCss('clean');
     const editorialCss = this.loadThemeCss('editorial');
     const terminalCss = this.loadThemeCss('terminal');
+
+    // Mermaid script URI for webview
+    const mermaidUri = this.panel.webview.asWebviewUri(
+      vscode.Uri.file(path.join(this.extensionPath, 'vendor', 'mermaid.min.js'))
+    );
 
     // Read VS Code's editor font for code blocks
     const editorConfig = vscode.workspace.getConfiguration('editor');
@@ -654,6 +660,45 @@ export class PreviewPanel {
       word-break: break-word;
     }
 
+    /* ===== Mermaid diagram card ===== */
+    .mermaid-card {
+      margin: 24px 0;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-elevated);
+      overflow: hidden;
+    }
+
+    .mermaid-render {
+      background: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .mermaid-render pre.mermaid {
+      margin: 0;
+      padding: 0;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+
+    .mermaid-card svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .mermaid-error {
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      padding: 20px;
+      text-align: center;
+    }
+
     /* ===== Search overlay ===== */
     .search-overlay {
       display: none;
@@ -809,6 +854,7 @@ export class PreviewPanel {
   <style id="theme-clean">${cleanCss}</style>
   <style id="theme-editorial">${editorialCss}</style>
   <style id="theme-terminal">${terminalCss}</style>
+  <script src="${mermaidUri}"></script>
 </head>
 <body>
   <nav class="sidebar" id="sidebar">
@@ -877,6 +923,11 @@ export class PreviewPanel {
   </div>
 
   <script>
+    // Initialize Mermaid
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+    }
+
     const vscode = acquireVsCodeApi();
     const html = document.documentElement;
     const contentArea = document.getElementById('contentArea');
@@ -1359,6 +1410,27 @@ export class PreviewPanel {
         darkToggle.classList.toggle('is-light', mode === 'light');
       }
     });
+
+    // Render Mermaid diagrams
+    (async () => {
+      if (typeof mermaid === 'undefined') return;
+      const elements = document.querySelectorAll('pre.mermaid');
+      for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        const source = el.textContent || '';
+        const container = el.parentElement;
+        if (!container || !source.trim()) {
+          if (container) container.innerHTML = '<div class="mermaid-error">Diagram syntax error</div>';
+          continue;
+        }
+        try {
+          const { svg } = await mermaid.render('mermaid-' + i, source);
+          container.innerHTML = svg;
+        } catch {
+          container.innerHTML = '<div class="mermaid-error">Diagram syntax error</div>';
+        }
+      }
+    })();
   </script>
 </body>
 </html>`;
