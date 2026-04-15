@@ -790,7 +790,7 @@ export class PreviewPanel {
         <span class="hint-sep">&middot;</span>
         <kbd>[</kbd><kbd>]</kbd> siblings
         <span class="hint-sep">&middot;</span>
-        <kbd>${process.platform === 'darwin' ? '&#8984;' : 'Ctrl+'}K</kbd> search
+        <kbd>/</kbd> search
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
@@ -1085,7 +1085,8 @@ export class PreviewPanel {
       searchOverlay.classList.add('open');
       searchInput.value = '';
       searchMeta.textContent = '';
-      searchInput.focus();
+      // Delay focus to ensure overlay is visible and VS Code chord handler has settled
+      requestAnimationFrame(() => searchInput.focus());
     }
 
     function closeSearch() {
@@ -1230,6 +1231,14 @@ export class PreviewPanel {
       const tag = e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
       if (searchOverlay.classList.contains('open')) return;
+
+      // / opens search (vim-style, avoids Cmd+K chord conflict)
+      if (e.key === '/') {
+        e.preventDefault();
+        openSearch();
+        return;
+      }
+
       // Skip if no headings or modifier keys are held
       if (headings.length === 0) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
