@@ -48,9 +48,9 @@ export class PreviewPanel {
 
   public update(document: vscode.TextDocument) {
     const source = document.getText();
-    const { html, toc } = parseMarkdown(source);
+    const { html, toc, frontmatter } = parseMarkdown(source);
     this.panel.title = `Preview: ${path.basename(document.fileName)}`;
-    this.panel.webview.html = this.buildHtml(html, toc);
+    this.panel.webview.html = this.buildHtml(html, toc, frontmatter);
   }
 
   public setTheme(name: string) {
@@ -72,9 +72,28 @@ export class PreviewPanel {
     }
   }
 
+  private stripQuotes(value: string): string {
+    if ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))) {
+      return value.slice(1, -1);
+    }
+    return value;
+  }
+
+  private buildFrontmatterCard(frontmatter: Record<string, string> | null): string {
+    if (!frontmatter) return '';
+    const rows = Object.entries(frontmatter)
+      .map(([key, value]) =>
+        `<div class="frontmatter-row"><span class="frontmatter-key">${this.escapeHtml(key)}</span><span class="frontmatter-value">${this.escapeHtml(this.stripQuotes(value))}</span></div>`
+      )
+      .join('\n');
+    return `<div class="frontmatter-card">\n${rows}\n</div>`;
+  }
+
   private buildHtml(
     bodyHtml: string,
     toc: { level: number; id: string; text: string }[],
+    frontmatter?: Record<string, string> | null,
   ): string {
     const cleanCss = this.loadThemeCss('clean');
     const editorialCss = this.loadThemeCss('editorial');
@@ -601,6 +620,40 @@ export class PreviewPanel {
 
     .content-inner strong { color: var(--ink); }
 
+    /* ===== Frontmatter card ===== */
+    .frontmatter-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75em 1em;
+      margin-bottom: 1.5em;
+      font-size: 0.875em;
+    }
+
+    .frontmatter-row {
+      display: flex;
+      gap: 1em;
+      padding: 0.4em 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .frontmatter-row:last-child {
+      border-bottom: none;
+    }
+
+    .frontmatter-key {
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      min-width: 8em;
+      flex-shrink: 0;
+      align-self: start;
+    }
+
+    .frontmatter-value {
+      color: var(--ink-body);
+      word-break: break-word;
+    }
+
     /* ===== Search overlay ===== */
     .search-overlay {
       display: none;
@@ -800,6 +853,7 @@ export class PreviewPanel {
       </div>
     </div>
     <div class="content-inner">
+      ${this.buildFrontmatterCard(frontmatter ?? null)}
       ${bodyHtml}
     </div>
   </main>

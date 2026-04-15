@@ -329,6 +329,21 @@ body { font-family: var(--font-body); }
   transition: background 150ms ease;
 }
 
+/* Frontmatter card */
+[data-theme="terminal"] .frontmatter-card {
+  border: 1px dashed var(--accent-border);
+  border-radius: 0;
+  background: var(--surface-elevated);
+  font-family: var(--font-mono);
+}
+[data-theme="terminal"] .frontmatter-key {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+[data-theme="terminal"] .frontmatter-value {
+  font-family: var(--font-mono);
+}
+
 /* Sidebar — > prefix on links */
 [data-theme="terminal"] .sidebar .toc-link::before {
   content: "> ";

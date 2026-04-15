@@ -6,6 +6,37 @@ export interface TocEntry {
   text: string;
 }
 
+export type FrontmatterData = Record<string, string> | null;
+
+const frontmatterRegex = /^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/;
+const keyValueRegex = /^([^:]+):\s?(.*)/;
+
+function extractFrontmatter(source: string): { frontmatter: FrontmatterData; body: string } {
+  const match = source.match(frontmatterRegex);
+  if (!match) {
+    return { frontmatter: null, body: source };
+  }
+
+  const block = match[1];
+  const pairs: Record<string, string> = {};
+
+  for (const line of block.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const kvMatch = trimmed.match(keyValueRegex);
+    if (kvMatch) {
+      pairs[kvMatch[1].trim()] = kvMatch[2].trim();
+    }
+  }
+
+  if (Object.keys(pairs).length === 0) {
+    return { frontmatter: null, body: source };
+  }
+
+  const body = source.slice(match[0].length);
+  return { frontmatter: pairs, body };
+}
+
 const md = new MarkdownIt({
   html: true,
   linkify: true,
@@ -44,7 +75,8 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;');
 }
 
-export function parseMarkdown(source: string): { html: string; toc: TocEntry[] } {
+export function parseMarkdown(source: string): { html: string; toc: TocEntry[]; frontmatter: FrontmatterData } {
+  const { frontmatter, body } = extractFrontmatter(source);
   const toc: TocEntry[] = [];
   const slugCounts = new Map<string, number>();
 
@@ -81,10 +113,10 @@ export function parseMarkdown(source: string): { html: string; toc: TocEntry[] }
     return defaultHeadingOpen(tokens, idx, options, env, self);
   };
 
-  const html = md.render(source);
+  const html = md.render(body);
 
   // Reset the override so repeated calls don't stack
   md.renderer.rules.heading_open = defaultHeadingOpen;
 
-  return { html, toc };
+  return { html, toc, frontmatter };
 }
