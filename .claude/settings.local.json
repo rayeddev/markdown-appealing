@@ -10,9 +10,13 @@
       "Bash(gh auth:*)",
       "Bash(git rm:*)",
       "Bash(git commit -m ':*)",
-      "Bash(gh repo:*)",
       "Bash(git tag:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(gh label:*)",
+      "Bash(gh issue:*)",
+      "Bash([ -n :*)",
+      "Bash(echo :*)",
+      "Bash(bash /Users/rayedalnoom/.claude/plugins/cache/compound-engineering-plugin/compound-engineering/2.65.0/skills/ce-setup/scripts/check-health --version 2.65.0)"
     ]
   }
 }
