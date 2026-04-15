@@ -22,6 +22,23 @@ Switch between 3 carefully crafted visual styles:
 
 Each theme loads its own Google Fonts and has distinct rendering for headings, code blocks, blockquotes, lists, tables, and horizontal rules.
 
+### YAML Frontmatter Card
+
+Files with YAML frontmatter (`---` delimited key:value blocks) render as a styled metadata card at the top of the preview instead of broken `<hr>` elements. Two-column key-value layout with row separators, automatic quote stripping, and per-theme styling.
+
+### Keyboard Navigation
+
+Vim-style heading navigation without leaving the preview:
+
+| Key | Action |
+| --- | --- |
+| `j` / `k` | Next / previous heading |
+| `gg` / `G` | First / last heading |
+| `[` / `]` | Previous / next sibling (same level) |
+| `/` | Open search |
+
+Active heading is highlighted with a cursor bar that persists across re-renders and syncs bidirectionally with the TOC sidebar.
+
 ### Sidebar Table of Contents
 
 - Auto-generated from headings (h1-h4)
@@ -31,9 +48,9 @@ Each theme loads its own Google Fonts and has distinct rendering for headings, c
 - **Collapsible** to mini dots for more reading space
 - Click any heading to smooth-scroll to it
 
-### Search (Cmd+K)
+### Search (Cmd+K or /)
 
-- Press `Cmd+K` (or `Ctrl+K`) to open the search overlay
+- Press `Cmd+K`, `Ctrl+K`, or `/` to open the search overlay
 - Case-insensitive text search across the rendered content
 - Matches highlighted inline with current match emphasized
 - Navigate with `Enter` / `Shift+Enter`
@@ -46,6 +63,14 @@ Each theme loads its own Google Fonts and has distinct rendering for headings, c
 - **Light**: forced light mode
 - Cycles through: System -> Dark -> Light -> System
 - Each theme has carefully tuned palettes for both modes
+
+### Font Customization
+
+Configure fonts and sizes via VS Code settings:
+
+- Body font, heading font, code font
+- Body size, code size
+- Preview re-renders live when settings change
 
 ### Live Preview
 
@@ -101,10 +126,13 @@ Each theme loads its own Google Fonts and has distinct rendering for headings, c
 | Shortcut | Action |
 | --- | --- |
 | `Cmd+Shift+V` | Open preview |
-| `Cmd+K` | Search in preview |
+| `Cmd+K` or `/` | Search in preview |
 | `Enter` | Next search match |
 | `Shift+Enter` | Previous search match |
 | `Esc` | Close search |
+| `j` / `k` | Next / previous heading |
+| `gg` / `G` | First / last heading |
+| `[` / `]` | Previous / next sibling heading |
 
 ---
 
@@ -159,7 +187,7 @@ Then press `F5` in VS Code to launch the Extension Development Host.
 ```bash
 npm run vscode:prepublish
 npx vsce package
-code --install-extension markdown-appealing-0.1.0.vsix
+code --install-extension markdown-appealing-0.4.0.vsix
 ```
 
 ---
