@@ -205,7 +205,6 @@ export class PreviewPanel {
     }
 
     .toolbar-right {
-      margin-left: auto;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -716,12 +715,18 @@ export class PreviewPanel {
     .nav-hints {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.65rem;
+      gap: 5px;
+      margin-left: auto;
+      font-size: 0.62rem;
       color: var(--ink-soft);
       font-family: var(--font-sans, -apple-system, sans-serif);
       white-space: nowrap;
-      opacity: 0.7;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    .nav-hints:hover {
+      opacity: 0.85;
     }
 
     .nav-hints kbd {
@@ -729,16 +734,17 @@ export class PreviewPanel {
       padding: 1px 4px;
       border: 1px solid var(--border);
       border-radius: 3px;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       font-family: var(--font-mono, monospace);
       background: var(--surface-elevated, var(--bg-subtle));
-      min-width: 16px;
+      min-width: 14px;
       text-align: center;
+      line-height: 1.4;
     }
 
     .nav-hints .hint-sep {
       color: var(--border);
-      margin: 0 2px;
+      margin: 0 1px;
     }
 
     /* ===== Transitions ===== */
@@ -787,7 +793,7 @@ export class PreviewPanel {
         <kbd>${process.platform === 'darwin' ? '&#8984;' : 'Ctrl+'}K</kbd> search
       </div>
       <div class="toolbar-right">
-        <span class="theme-desc" id="themeDesc">${this.getThemeDesc(currentTheme)}</span>
+        <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
         <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
         </button>
