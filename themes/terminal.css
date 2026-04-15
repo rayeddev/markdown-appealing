@@ -319,6 +319,16 @@ body { font-family: var(--font-body); }
 /* Bold text */
 [data-theme="terminal"] .content-inner strong { color: var(--ink); }
 
+/* Active heading cursor */
+[data-theme="terminal"] .content-inner .heading-active {
+  background: var(--active-bg);
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  margin-left: -15px;
+  border-radius: 0;
+  transition: background 150ms ease;
+}
+
 /* Sidebar — > prefix on links */
 [data-theme="terminal"] .sidebar .toc-link::before {
   content: "> ";

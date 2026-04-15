@@ -289,5 +289,15 @@ body { font-family: var(--font-body); }
 /* Bold text */
 [data-theme="editorial"] .content-inner strong { color: var(--ink); }
 
+/* Active heading cursor */
+[data-theme="editorial"] .content-inner .heading-active {
+  background: var(--active-bg);
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  margin-left: -15px;
+  border-radius: 0 6px 6px 0;
+  transition: background 150ms ease;
+}
+
 /* Line numbers hidden in editorial */
 [data-theme="editorial"] .code-line-numbers { display: none; }
