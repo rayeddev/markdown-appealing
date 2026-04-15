@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0] - 2026-04-15
+
+### Added
+- Vim-style keyboard navigation: j/k next/prev heading, gg/G first/last, [/] same-level siblings (#6)
+- Visible cursor highlight on active heading across all themes
+- Keyboard shortcut hint bar in toolbar
+- `/` as search shortcut (avoids VS Code Cmd+K chord conflict)
+- Cursor persists across re-renders via vscode.getState/setState
+- Bidirectional sync between keyboard cursor and TOC sidebar
+
 ## [0.2.0] - 2026-04-14
 
 ### Added
