@@ -22,6 +22,14 @@ Switch between 3 carefully crafted visual styles:
 
 Each theme loads its own Google Fonts and has distinct rendering for headings, code blocks, blockquotes, lists, tables, and horizontal rules.
 
+### Mermaid Diagrams
+
+Fenced code blocks with language `mermaid` render as visual SVG diagrams inside styled card containers. Supports all Mermaid diagram types — flowcharts, sequence diagrams, state diagrams, ER diagrams, pie charts, and more.
+
+- **Themed card container** with per-theme styling (rounded, accent-bordered, or dashed)
+- **Light inner background** ensures diagrams render correctly in both dark and light modes
+- **Error handling** — invalid syntax shows a clean "Diagram syntax error" message instead of breaking the preview
+
 ### YAML Frontmatter Card
 
 Files with YAML frontmatter (`---` delimited key:value blocks) render as a styled metadata card at the top of the preview instead of broken `<hr>` elements. Two-column key-value layout with row separators, automatic quote stripping, and per-theme styling.
@@ -187,7 +195,7 @@ Then press `F5` in VS Code to launch the Extension Development Host.
 ```bash
 npm run vscode:prepublish
 npx vsce package
-code --install-extension markdown-appealing-0.4.0.vsix
+code --install-extension markdown-appealing-0.5.0.vsix
 ```
 
 ---
