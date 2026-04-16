@@ -2,7 +2,7 @@
   "name": "markdown-appealing",
   "displayName": "Markdown Appealing",
   "description": "Beautiful markdown preview with multiple themes, dark/light toggle, and sidebar table of contents navigation.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "rayeddev",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "activationEvents": [
     "onLanguage:markdown"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -80,15 +80,18 @@
   },
   "scripts": {
     "copy:mermaid": "mkdir -p vendor && cp node_modules/mermaid/dist/mermaid.min.js vendor/mermaid.min.js",
-    "vscode:prepublish": "npm run copy:mermaid && npm run compile",
+    "vscode:prepublish": "npm run copy:mermaid && npm run bundle",
+    "bundle": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
+    "watch:bundle": "npm run bundle -- --watch",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.85.0",
+    "esbuild": "^0.28.0",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3"
   },
