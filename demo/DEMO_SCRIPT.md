@@ -13,7 +13,7 @@ Recommended tool: [Kap](https://getkap.co/) (free, Mac) or [LICEcap](https://www
 ### demo-preview.gif (Main demo, ~15 seconds)
 1. Open `demo/sample.md` in VS Code
 2. Press `Cmd+Shift+V` to open preview
-3. Scroll down slowly through the content (show TOC following along)
+3. Scroll down slowly through the content (show TOC following along, pause briefly on the "Callouts & Alerts" section so the 5 alert types are visible)
 4. Click a heading in the TOC sidebar (show smooth scroll)
 5. Click "Editorial" theme button
 6. Pause 2 seconds

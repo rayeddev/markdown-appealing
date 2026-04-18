@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0] - 2026-04-18
+
+### Added
+- GitHub-flavored alerts: `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]` (#23)
+- Inline Octicon SVGs per alert type, shipped offline in the bundle
+- Per-theme alert voices: soft tinted card (clean), magazine rules (editorial), dashed `[!TYPE]` box (terminal)
+- Demo sample updated with a "Callouts & Alerts" section exercising all 5 types
+
+### Fixed
+- Terminal theme no longer prepends `NOTE ` to every regular blockquote (pre-existing styling bug replaced by real alert support)
+
+## [0.5.1] - 2026-04-16
+
+### Fixed
+- Extension activation failure: bundled with esbuild so runtime dependencies ship inside the VSIX
+
 ## [0.5.0] - 2026-04-15
 
 ### Added

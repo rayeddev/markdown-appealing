@@ -27,6 +27,22 @@
   --th-bg: #ebeef2;
   --tr-even-bg: #f0f2f6;
 
+  --alert-note-bg: rgba(8,145,178,0.06);
+  --alert-note-border: #0891a3;
+  --alert-note-ink: #0e7a8a;
+  --alert-tip-bg: rgba(22,163,74,0.06);
+  --alert-tip-border: #16a34a;
+  --alert-tip-ink: #15803d;
+  --alert-warning-bg: rgba(217,119,6,0.08);
+  --alert-warning-border: #d97706;
+  --alert-warning-ink: #b45309;
+  --alert-caution-bg: rgba(220,38,38,0.06);
+  --alert-caution-border: #dc2626;
+  --alert-caution-ink: #b91c1c;
+  --alert-important-bg: rgba(190,24,93,0.06);
+  --alert-important-border: #be185d;
+  --alert-important-ink: #9f1758;
+
   --font-display: 'IBM Plex Mono', monospace;
   --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
   --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
@@ -57,6 +73,22 @@
   --blockquote-bg: rgba(57,211,83,0.03);
   --th-bg: #0f1319;
   --tr-even-bg: #0b0f15;
+
+  --alert-note-bg: rgba(34,211,238,0.08);
+  --alert-note-border: rgba(34,211,238,0.5);
+  --alert-note-ink: #22d3ee;
+  --alert-tip-bg: rgba(57,211,83,0.08);
+  --alert-tip-border: rgba(57,211,83,0.5);
+  --alert-tip-ink: #39d353;
+  --alert-warning-bg: rgba(251,191,36,0.10);
+  --alert-warning-border: rgba(251,191,36,0.55);
+  --alert-warning-ink: #fbbf24;
+  --alert-caution-bg: rgba(248,113,113,0.10);
+  --alert-caution-border: rgba(248,113,113,0.55);
+  --alert-caution-ink: #f87171;
+  --alert-important-bg: rgba(244,114,182,0.08);
+  --alert-important-border: rgba(244,114,182,0.5);
+  --alert-important-ink: #f472b6;
 
   --font-display: 'IBM Plex Mono', monospace;
   --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
@@ -90,6 +122,22 @@
     --th-bg: #ebeef2;
     --tr-even-bg: #f0f2f6;
 
+    --alert-note-bg: rgba(8,145,178,0.06);
+    --alert-note-border: #0891a3;
+    --alert-note-ink: #0e7a8a;
+    --alert-tip-bg: rgba(22,163,74,0.06);
+    --alert-tip-border: #16a34a;
+    --alert-tip-ink: #15803d;
+    --alert-warning-bg: rgba(217,119,6,0.08);
+    --alert-warning-border: #d97706;
+    --alert-warning-ink: #b45309;
+    --alert-caution-bg: rgba(220,38,38,0.06);
+    --alert-caution-border: #dc2626;
+    --alert-caution-ink: #b91c1c;
+    --alert-important-bg: rgba(190,24,93,0.06);
+    --alert-important-border: #be185d;
+    --alert-important-ink: #9f1758;
+
     --font-display: 'IBM Plex Mono', monospace;
     --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
     --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
@@ -121,6 +169,22 @@
     --blockquote-bg: rgba(57,211,83,0.03);
     --th-bg: #0f1319;
     --tr-even-bg: #0b0f15;
+
+    --alert-note-bg: rgba(34,211,238,0.08);
+    --alert-note-border: rgba(34,211,238,0.5);
+    --alert-note-ink: #22d3ee;
+    --alert-tip-bg: rgba(57,211,83,0.08);
+    --alert-tip-border: rgba(57,211,83,0.5);
+    --alert-tip-ink: #39d353;
+    --alert-warning-bg: rgba(251,191,36,0.10);
+    --alert-warning-border: rgba(251,191,36,0.55);
+    --alert-warning-ink: #fbbf24;
+    --alert-caution-bg: rgba(248,113,113,0.10);
+    --alert-caution-border: rgba(248,113,113,0.55);
+    --alert-caution-ink: #f87171;
+    --alert-important-bg: rgba(244,114,182,0.08);
+    --alert-important-border: rgba(244,114,182,0.5);
+    --alert-important-ink: #f472b6;
 
     --font-display: 'IBM Plex Mono', monospace;
     --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
@@ -228,21 +292,13 @@ body { font-family: var(--font-body); }
   border-left: 3px solid var(--accent) !important;
 }
 
-/* Blockquote — NOTE label */
+/* Blockquote — plain left-bar (real alerts are handled by .gh-alert below) */
 [data-theme="terminal"] .content-inner blockquote {
   border-left: 2px solid var(--accent);
   background: var(--accent-bg);
   border-radius: 0;
   padding: 12px 18px;
   font-style: normal;
-}
-
-[data-theme="terminal"] .content-inner blockquote::before {
-  content: "NOTE ";
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--accent);
 }
 
 /* Lists — arrow markers */
@@ -363,3 +419,36 @@ body { font-family: var(--font-body); }
 [data-theme="terminal"] .sidebar .toc-link.active::before {
   color: var(--active-text);
 }
+
+/* GitHub alerts — dashed box, [!TYPE] bracketed label, phosphor hues */
+[data-theme="terminal"] .gh-alert-note      { --alert-bg: var(--alert-note-bg);      --alert-border: var(--alert-note-border);      --alert-ink: var(--alert-note-ink); }
+[data-theme="terminal"] .gh-alert-tip       { --alert-bg: var(--alert-tip-bg);       --alert-border: var(--alert-tip-border);       --alert-ink: var(--alert-tip-ink); }
+[data-theme="terminal"] .gh-alert-warning   { --alert-bg: var(--alert-warning-bg);   --alert-border: var(--alert-warning-border);   --alert-ink: var(--alert-warning-ink); }
+[data-theme="terminal"] .gh-alert-caution   { --alert-bg: var(--alert-caution-bg);   --alert-border: var(--alert-caution-border);   --alert-ink: var(--alert-caution-ink); }
+[data-theme="terminal"] .gh-alert-important { --alert-bg: var(--alert-important-bg); --alert-border: var(--alert-important-border); --alert-ink: var(--alert-important-ink); }
+
+[data-theme="terminal"] .gh-alert {
+  margin: 20px 0;
+  padding: 12px 16px;
+  background: var(--alert-bg);
+  border: 1px dashed var(--alert-border);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+}
+[data-theme="terminal"] .gh-alert-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--alert-ink);
+}
+[data-theme="terminal"] .gh-alert-label::before { content: "[!"; color: var(--alert-ink); }
+[data-theme="terminal"] .gh-alert-label::after  { content: "]";  color: var(--alert-ink); }
+[data-theme="terminal"] .gh-alert-icon { display: none; }
+[data-theme="terminal"] .gh-alert > p { margin: 0 0 8px 0; }
+[data-theme="terminal"] .gh-alert > p:last-child { margin-bottom: 0; }
