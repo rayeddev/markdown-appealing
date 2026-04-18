@@ -266,7 +266,7 @@ Each theme × mode block defines all 15 variables (5 types × 3 props). Shared l
 
 ---
 
-- [ ] **Unit 5: Fixture README + cross-theme manual verification**
+- [x] **Unit 5: Fixture README + cross-theme manual verification**
 
 **Goal:** Produce a single fixture markdown file that exercises every alert + theme combination, use it to verify Units 1–4 end-to-end, and update the extension's own README to list alerts as a supported feature.
 

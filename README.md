@@ -30,6 +30,22 @@ Fenced code blocks with language `mermaid` render as visual SVG diagrams inside 
 - **Light inner background** ensures diagrams render correctly in both dark and light modes
 - **Error handling** — invalid syntax shows a clean "Diagram syntax error" message instead of breaking the preview
 
+### GitHub Alerts
+
+Blockquote-style alerts from the GitHub flavor spec render inline with type-specific icon and label:
+
+```md
+> [!NOTE]      Useful information
+> [!TIP]       Helpful advice
+> [!IMPORTANT] Key information
+> [!WARNING]   Urgent caveat
+> [!CAUTION]   Negative consequences
+```
+
+- **5 GFM alert types** with inline Octicon SVGs (offline — no icon CDN)
+- **Per-theme voice** — soft card in clean, magazine rule in editorial, dashed `[!TYPE]` box in terminal
+- **Body supports inline markdown** — links, emphasis, code, multi-paragraph
+
 ### YAML Frontmatter Card
 
 Files with YAML frontmatter (`---` delimited key:value blocks) render as a styled metadata card at the top of the preview instead of broken `<hr>` elements. Two-column key-value layout with row separators, automatic quote stripping, and per-theme styling.
