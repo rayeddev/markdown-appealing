@@ -41,6 +41,27 @@ function buildPrompt(ctx: AgentContext): string {
 
 The key insight: every piece of context is just a `string` that gets concatenated. Markdown headings create natural **attention boundaries** that help the model organize information.
 
+### Callouts & Alerts
+
+GitHub-flavored alerts render inline, each with its own voice per theme.
+
+> [!NOTE]
+> Context windows are measured in tokens, not characters. A `gpt-4o` window of 128K tokens is roughly 96K words of English prose.
+
+> [!TIP]
+> Cache your system prompt with prompt caching APIs — you'll cut latency by **40-70%** on repeated calls with a stable preamble.
+
+> [!IMPORTANT]
+> Always strip PII before injecting retrieved chunks into the prompt. Vector stores are *not* compliance boundaries by default.
+
+> [!WARNING]
+> Streaming responses and tool-calling don't always compose cleanly. Some providers require you to disable streaming when tool results come back mid-turn.
+>
+> Plan for both paths and feature-detect at runtime.
+
+> [!CAUTION]
+> Never round-trip secrets through the LLM, even inside tool arguments. Anything the model sees can surface in logs, telemetry, or the next completion.
+
 ### Agent Request Flow
 
 ```mermaid

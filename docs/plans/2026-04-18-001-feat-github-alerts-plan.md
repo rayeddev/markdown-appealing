@@ -166,7 +166,7 @@ Each theme × mode block defines all 15 variables (5 types × 3 props). Shared l
 
 ---
 
-- [ ] **Unit 2: Clean theme alert styling**
+- [x] **Unit 2: Clean theme alert styling**
 
 **Goal:** Style all 5 alert types for clean theme in both light and dark modes. Establish the shared layout CSS that all themes inherit.
 
@@ -200,7 +200,7 @@ Each theme × mode block defines all 15 variables (5 types × 3 props). Shared l
 
 ---
 
-- [ ] **Unit 3: Editorial theme alert styling**
+- [x] **Unit 3: Editorial theme alert styling**
 
 **Goal:** Style all 5 alert types for editorial theme in both light and dark modes, in editorial's serif-friendly voice.
 
@@ -232,7 +232,7 @@ Each theme × mode block defines all 15 variables (5 types × 3 props). Shared l
 
 ---
 
-- [ ] **Unit 4: Terminal theme alert styling + resolve existing `NOTE` prefix conflict**
+- [x] **Unit 4: Terminal theme alert styling + resolve existing `NOTE` prefix conflict**
 
 **Goal:** Style all 5 alert types for terminal theme in both light and dark modes, and remove the pre-existing `blockquote::before { content: "NOTE "; }` rule that conflicts with real alerts.
 

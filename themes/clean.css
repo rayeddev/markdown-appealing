@@ -27,6 +27,22 @@
   --th-bg: #f5f5f7;
   --tr-even-bg: #fafafa;
 
+  --alert-note-bg: rgba(59,92,255,0.06);
+  --alert-note-border: rgba(59,92,255,0.4);
+  --alert-note-ink: #3b5cff;
+  --alert-tip-bg: rgba(22,163,74,0.06);
+  --alert-tip-border: rgba(22,163,74,0.4);
+  --alert-tip-ink: #16a34a;
+  --alert-warning-bg: rgba(217,119,6,0.08);
+  --alert-warning-border: rgba(217,119,6,0.45);
+  --alert-warning-ink: #c2700a;
+  --alert-caution-bg: rgba(220,38,38,0.06);
+  --alert-caution-border: rgba(220,38,38,0.4);
+  --alert-caution-ink: #dc2626;
+  --alert-important-bg: rgba(147,51,234,0.06);
+  --alert-important-border: rgba(147,51,234,0.4);
+  --alert-important-ink: #9333ea;
+
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Literata', Georgia, serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -57,6 +73,22 @@
   --blockquote-bg: rgba(108,140,255,0.04);
   --th-bg: #19191d;
   --tr-even-bg: #141417;
+
+  --alert-note-bg: rgba(108,140,255,0.1);
+  --alert-note-border: rgba(108,140,255,0.5);
+  --alert-note-ink: #8ba4ff;
+  --alert-tip-bg: rgba(52,211,153,0.1);
+  --alert-tip-border: rgba(52,211,153,0.5);
+  --alert-tip-ink: #34d399;
+  --alert-warning-bg: rgba(251,191,36,0.1);
+  --alert-warning-border: rgba(251,191,36,0.5);
+  --alert-warning-ink: #fbbf24;
+  --alert-caution-bg: rgba(248,113,113,0.1);
+  --alert-caution-border: rgba(248,113,113,0.5);
+  --alert-caution-ink: #f87171;
+  --alert-important-bg: rgba(192,132,252,0.1);
+  --alert-important-border: rgba(192,132,252,0.5);
+  --alert-important-ink: #c084fc;
 
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Literata', Georgia, serif;
@@ -90,6 +122,22 @@
     --th-bg: #f5f5f7;
     --tr-even-bg: #fafafa;
 
+    --alert-note-bg: rgba(59,92,255,0.06);
+    --alert-note-border: rgba(59,92,255,0.4);
+    --alert-note-ink: #3b5cff;
+    --alert-tip-bg: rgba(22,163,74,0.06);
+    --alert-tip-border: rgba(22,163,74,0.4);
+    --alert-tip-ink: #16a34a;
+    --alert-warning-bg: rgba(217,119,6,0.08);
+    --alert-warning-border: rgba(217,119,6,0.45);
+    --alert-warning-ink: #c2700a;
+    --alert-caution-bg: rgba(220,38,38,0.06);
+    --alert-caution-border: rgba(220,38,38,0.4);
+    --alert-caution-ink: #dc2626;
+    --alert-important-bg: rgba(147,51,234,0.06);
+    --alert-important-border: rgba(147,51,234,0.4);
+    --alert-important-ink: #9333ea;
+
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Literata', Georgia, serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -121,6 +169,22 @@
     --blockquote-bg: rgba(108,140,255,0.04);
     --th-bg: #19191d;
     --tr-even-bg: #141417;
+
+    --alert-note-bg: rgba(108,140,255,0.1);
+    --alert-note-border: rgba(108,140,255,0.5);
+    --alert-note-ink: #8ba4ff;
+    --alert-tip-bg: rgba(52,211,153,0.1);
+    --alert-tip-border: rgba(52,211,153,0.5);
+    --alert-tip-ink: #34d399;
+    --alert-warning-bg: rgba(251,191,36,0.1);
+    --alert-warning-border: rgba(251,191,36,0.5);
+    --alert-warning-ink: #fbbf24;
+    --alert-caution-bg: rgba(248,113,113,0.1);
+    --alert-caution-border: rgba(248,113,113,0.5);
+    --alert-caution-ink: #f87171;
+    --alert-important-bg: rgba(192,132,252,0.1);
+    --alert-important-border: rgba(192,132,252,0.5);
+    --alert-important-ink: #c084fc;
 
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Literata', Georgia, serif;
@@ -267,3 +331,36 @@ body { font-family: var(--font-body); }
 
 /* Line numbers hidden in clean */
 [data-theme="clean"] .code-line-numbers { display: none; }
+
+/* GitHub alerts — soft tinted card with colored left border */
+[data-theme="clean"] .gh-alert-note      { --alert-bg: var(--alert-note-bg);      --alert-border: var(--alert-note-border);      --alert-ink: var(--alert-note-ink); }
+[data-theme="clean"] .gh-alert-tip       { --alert-bg: var(--alert-tip-bg);       --alert-border: var(--alert-tip-border);       --alert-ink: var(--alert-tip-ink); }
+[data-theme="clean"] .gh-alert-warning   { --alert-bg: var(--alert-warning-bg);   --alert-border: var(--alert-warning-border);   --alert-ink: var(--alert-warning-ink); }
+[data-theme="clean"] .gh-alert-caution   { --alert-bg: var(--alert-caution-bg);   --alert-border: var(--alert-caution-border);   --alert-ink: var(--alert-caution-ink); }
+[data-theme="clean"] .gh-alert-important { --alert-bg: var(--alert-important-bg); --alert-border: var(--alert-important-border); --alert-ink: var(--alert-important-ink); }
+
+[data-theme="clean"] .gh-alert {
+  margin: 20px 0;
+  padding: 14px 18px;
+  background: var(--alert-bg);
+  border-left: 4px solid var(--alert-border);
+  border-radius: 0 8px 8px 0;
+}
+[data-theme="clean"] .gh-alert-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--alert-ink);
+}
+[data-theme="clean"] .gh-alert-icon {
+  color: var(--alert-ink);
+  flex-shrink: 0;
+}
+[data-theme="clean"] .gh-alert > p { margin: 0 0 8px 0; }
+[data-theme="clean"] .gh-alert > p:last-child { margin-bottom: 0; }
