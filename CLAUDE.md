@@ -5,10 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Development
 
 ```bash
-npm run compile    # one-time TypeScript build (outputs to out/)
-npm run watch      # watch mode for development
-npm run lint       # ESLint on src/
+npm run bundle         # esbuild bundle → dist/extension.js (what the extension actually runs)
+npm run watch:bundle   # bundle in watch mode
+npm run compile        # tsc typecheck → out/ (diagnostics only; NOT used at runtime)
+npm run watch          # tsc watch (diagnostics only)
+npm run lint           # ESLint on src/
 ```
+
+**Important:** `package.json` `main` points at `dist/extension.js`. `npm run compile` only produces `out/` for type checking and is not loaded by the extension. After editing `src/**`, run `npm run bundle` (or keep `watch:bundle` running) and reload the Extension Development Host (`Cmd+R`) to pick up changes. Theme CSS files in `themes/` are read from disk at runtime, so CSS edits do not need a rebuild — just reopen the preview.
 
 Press **F5** in VS Code to launch the Extension Development Host (uses `.vscode/launch.json`).
 
