@@ -33,6 +33,10 @@
       {
         "command": "markdownAppealing.toggleDarkMode",
         "title": "Markdown Appealing: Toggle Dark/Light Mode"
+      },
+      {
+        "command": "markdownAppealing.toggleFullscreen",
+        "title": "Markdown Appealing: Toggle Fullscreen"
       }
     ],
     "configuration": {

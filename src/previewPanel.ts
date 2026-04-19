@@ -12,6 +12,7 @@ export class PreviewPanel {
   private readonly extensionPath: string;
   private readonly themeManager: ThemeManager;
   private disposables: vscode.Disposable[] = [];
+  private isFullscreen = false;
 
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this.panel = panel;
@@ -27,6 +28,9 @@ export class PreviewPanel {
 
   private handleMessage(msg: { type?: string; [key: string]: unknown }) {
     switch (msg?.type) {
+      case 'toggleFullscreen':
+        this.toggleFullscreen();
+        return;
       case 'themeChanged':
       case 'darkModeChanged':
         // Posted by the webview on user interaction; no host-side action needed today.
@@ -78,6 +82,15 @@ export class PreviewPanel {
   public toggleDarkMode() {
     const mode = this.themeManager.toggleDarkMode();
     this.panel.webview.postMessage({ type: 'setDarkMode', darkMode: mode });
+  }
+
+  public toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+    vscode.commands.executeCommand('workbench.action.toggleZenMode');
+    this.panel.webview.postMessage({
+      type: 'fullscreenChanged',
+      fullscreen: this.isFullscreen,
+    });
   }
 
   private loadThemeCss(name: string): string {
