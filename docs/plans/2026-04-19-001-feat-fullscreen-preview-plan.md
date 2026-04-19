@@ -142,7 +142,7 @@ PreviewPanel.toggleFullscreen():
 
 ## Implementation Units
 
-- [ ] **Unit 1: Wire up `onDidReceiveMessage` on the preview webview**
+- [x] **Unit 1: Wire up `onDidReceiveMessage` on the preview webview**
 
 **Goal:** Add the host-side message listener so the webview can send typed messages back to the extension. This is strictly additive — existing unreceived posts (`themeChanged`, `darkModeChanged`) gain a receiver for the first time, which is a no-op for their current behavior.
 
@@ -174,7 +174,7 @@ PreviewPanel.toggleFullscreen():
 
 ---
 
-- [ ] **Unit 2: Register `markdownAppealing.toggleFullscreen` command and host-side toggle logic**
+- [x] **Unit 2: Register `markdownAppealing.toggleFullscreen` command and host-side toggle logic**
 
 **Goal:** Add the new command, wire it through `PreviewPanel`, and make it work end-to-end from the Command Palette. Button UI comes in Unit 3; this unit is complete when invoking the command from Cmd+Shift+P actually toggles Zen Mode.
 
@@ -220,7 +220,7 @@ PreviewPanel.toggleFullscreen():
 
 ---
 
-- [ ] **Unit 3: In-webview fullscreen button with icon state sync**
+- [x] **Unit 3: In-webview fullscreen button with icon state sync**
 
 **Goal:** Add the icon-button to `toolbar-right`, wire its click to `postMessage({type:'toggleFullscreen'})`, and update its icon + aria-pressed when the host posts `fullscreenChanged`.
 
