@@ -13,6 +13,7 @@ export class PreviewPanel {
   private readonly themeManager: ThemeManager;
   private disposables: vscode.Disposable[] = [];
   private isFullscreen = false;
+  private disposed = false;
 
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this.panel = panel;
@@ -26,17 +27,10 @@ export class PreviewPanel {
     );
   }
 
-  private handleMessage(msg: { type?: string; [key: string]: unknown }) {
-    switch (msg?.type) {
-      case 'toggleFullscreen':
-        this.toggleFullscreen();
-        return;
-      case 'themeChanged':
-      case 'darkModeChanged':
-        // Posted by the webview on user interaction; no host-side action needed today.
-        return;
-      default:
-        return;
+  private handleMessage(msg: { type: string; [key: string]: unknown }) {
+    if (this.disposed) return;
+    if (msg?.type === 'toggleFullscreen') {
+      this.toggleFullscreen();
     }
   }
 
@@ -72,6 +66,11 @@ export class PreviewPanel {
     const { html, toc, frontmatter } = parseMarkdown(source);
     this.panel.title = `Preview: ${path.basename(document.fileName)}`;
     this.panel.webview.html = this.buildHtml(html, toc, frontmatter);
+    // Re-render replaces the webview DOM, so the FAB resets to windowed state.
+    // Re-sync from host state so the icon matches actual Zen Mode.
+    if (this.isFullscreen) {
+      this.panel.webview.postMessage({ type: 'fullscreenChanged', fullscreen: true });
+    }
   }
 
   public setTheme(name: string) {
@@ -85,8 +84,11 @@ export class PreviewPanel {
   }
 
   public toggleFullscreen() {
+    if (this.disposed) return;
     this.isFullscreen = !this.isFullscreen;
-    vscode.commands.executeCommand('workbench.action.toggleZenMode');
+    vscode.commands.executeCommand('workbench.action.toggleZenMode').then(undefined, () => {
+      // Swallow rejection; toggleZenMode is a stable built-in. Optimistic state stays flipped.
+    });
     this.panel.webview.postMessage({
       type: 'fullscreenChanged',
       fullscreen: this.isFullscreen,
@@ -158,6 +160,9 @@ export class PreviewPanel {
     const tocHtml = this.buildTocHtml(toc);
     const tocCount = toc.length;
 
+    // FAB icon SVGs. Used twice in the output: interpolated into the initial button HTML,
+    // and JSON-stringified into webview-JS constants for the fullscreenChanged icon swap.
+    // Both emissions derive from these single TS sources, so edits propagate to both.
     const EXPAND_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V3h4"/><path d="M9 3h4v4"/><path d="M3 9v4h4"/><path d="M9 13h4v-4"/></svg>';
     const COMPRESS_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h3V3"/><path d="M10 3v3h3"/><path d="M6 13v-3H3"/><path d="M13 10h-3v3"/></svg>';
 
@@ -1091,7 +1096,7 @@ export class PreviewPanel {
     });
 
     // ===== Fullscreen toggle =====
-    fullscreenBtn.addEventListener('click', () => {
+    fullscreenBtn?.addEventListener('click', () => {
       vscode.postMessage({ type: 'toggleFullscreen' });
     });
 
@@ -1509,7 +1514,7 @@ export class PreviewPanel {
         const mode = msg.darkMode ? 'dark' : 'light';
         html.setAttribute('data-mode', mode);
         darkToggle.classList.toggle('is-light', mode === 'light');
-      } else if (msg.type === 'fullscreenChanged') {
+      } else if (msg.type === 'fullscreenChanged' && fullscreenBtn) {
         const label = msg.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
         if (fullscreenIcon) fullscreenIcon.innerHTML = msg.fullscreen ? COMPRESS_SVG : EXPAND_SVG;
         if (fullscreenHint) fullscreenHint.textContent = msg.fullscreen ? 'Esc Esc to exit' : 'Fullscreen';
@@ -1605,6 +1610,7 @@ export class PreviewPanel {
   }
 
   private dispose() {
+    this.disposed = true;
     PreviewPanel.currentPanel = undefined;
     this.panel.dispose();
     this.disposables.forEach((d) => d.dispose());
