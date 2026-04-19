@@ -158,6 +158,9 @@ export class PreviewPanel {
     const tocHtml = this.buildTocHtml(toc);
     const tocCount = toc.length;
 
+    const EXPAND_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V3h4"/><path d="M9 3h4v4"/><path d="M3 9v4h4"/><path d="M9 13h4v-4"/></svg>';
+    const COMPRESS_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h3V3"/><path d="M10 3v3h3"/><path d="M6 13v-3H3"/><path d="M13 10h-3v3"/></svg>';
+
     return /*html*/ `<!DOCTYPE html>
 <html lang="en" data-theme="${currentTheme}" ${darkModeAttr}>
 <head>
@@ -273,6 +276,30 @@ export class PreviewPanel {
       line-height: 1.3;
       font-family: var(--font-sans, -apple-system, sans-serif);
     }
+
+    /* Fullscreen toggle button */
+    .fullscreen-btn {
+      width: 28px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--ink-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: opacity 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .fullscreen-btn:hover {
+      opacity: 0.85;
+      color: var(--ink);
+    }
+
+    .fullscreen-btn svg { display: block; }
 
     /* Dark mode toggle switch */
     .dark-toggle {
@@ -922,6 +949,7 @@ export class PreviewPanel {
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
+        <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen">${EXPAND_SVG}</button>
         <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
         </button>
@@ -968,6 +996,10 @@ export class PreviewPanel {
     const progressFill = document.getElementById('progressFill');
     const themeDesc = document.getElementById('themeDesc');
     const darkToggle = document.getElementById('darkToggle');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    const EXPAND_SVG = ${JSON.stringify(EXPAND_SVG)};
+    const COMPRESS_SVG = ${JSON.stringify(COMPRESS_SVG)};
 
     const THEME_DESCS = {
       clean: 'Airy minimalism for distraction-free reading',
@@ -1021,6 +1053,11 @@ export class PreviewPanel {
         type: 'darkModeChanged',
         darkMode: next === 'dark',
       });
+    });
+
+    // ===== Fullscreen toggle =====
+    fullscreenBtn.addEventListener('click', () => {
+      vscode.postMessage({ type: 'toggleFullscreen' });
     });
 
     // ===== Sidebar collapse/expand =====
@@ -1437,6 +1474,12 @@ export class PreviewPanel {
         const mode = msg.darkMode ? 'dark' : 'light';
         html.setAttribute('data-mode', mode);
         darkToggle.classList.toggle('is-light', mode === 'light');
+      } else if (msg.type === 'fullscreenChanged') {
+        const label = msg.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
+        fullscreenBtn.innerHTML = msg.fullscreen ? COMPRESS_SVG : EXPAND_SVG;
+        fullscreenBtn.setAttribute('aria-label', label);
+        fullscreenBtn.setAttribute('aria-pressed', msg.fullscreen ? 'true' : 'false');
+        fullscreenBtn.setAttribute('title', label);
       }
     });
 
