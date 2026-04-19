@@ -287,24 +287,35 @@ export class PreviewPanel {
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--ink-soft);
+      border: 1px solid rgba(0, 0, 0, 0.14);
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--ink);
       border-radius: 999px;
       cursor: pointer;
-      opacity: 0.55;
-      transition: opacity 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+      opacity: 0.8;
+      transition: opacity 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
       font-family: var(--font-sans, -apple-system, sans-serif);
       font-size: 0.72rem;
       letter-spacing: 0.02em;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
+    [data-mode="dark"] .fullscreen-fab {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
     .fullscreen-fab:hover {
       opacity: 1;
-      color: var(--ink);
+      background: rgba(0, 0, 0, 0.1);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+    }
+
+    [data-mode="dark"] .fullscreen-fab:hover {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
     .fullscreen-fab-icon {
