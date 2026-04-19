@@ -277,29 +277,46 @@ export class PreviewPanel {
       font-family: var(--font-sans, -apple-system, sans-serif);
     }
 
-    /* Fullscreen toggle button */
-    .fullscreen-btn {
-      width: 28px;
-      height: 20px;
-      padding: 0;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--ink-soft);
+    /* Floating fullscreen FAB */
+    .fullscreen-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 80;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      transition: opacity 0.2s, color 0.2s;
-      flex-shrink: 0;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink-soft);
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+      font-family: var(--font-sans, -apple-system, sans-serif);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
-    .fullscreen-btn:hover {
-      opacity: 0.85;
+    .fullscreen-fab:hover {
+      opacity: 1;
       color: var(--ink);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
-    .fullscreen-btn svg { display: block; }
+    .fullscreen-fab-icon {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .fullscreen-fab-icon svg { display: block; }
+
+    .fullscreen-fab-hint {
+      white-space: nowrap;
+    }
 
     /* Dark mode toggle switch */
     .dark-toggle {
@@ -949,7 +966,6 @@ export class PreviewPanel {
       </div>
       <div class="toolbar-right">
         <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
-        <button class="fullscreen-btn" id="fullscreenBtn" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen">${EXPAND_SVG}</button>
         <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
         </button>
@@ -960,6 +976,12 @@ export class PreviewPanel {
       ${bodyHtml}
     </div>
   </main>
+
+  <!-- Floating fullscreen toggle -->
+  <button class="fullscreen-fab" id="fullscreenBtn" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen">
+    <span class="fullscreen-fab-icon">${EXPAND_SVG}</span>
+    <span class="fullscreen-fab-hint" id="fullscreenHint">Fullscreen</span>
+  </button>
 
   <!-- Search overlay -->
   <div class="search-overlay" id="searchOverlay">
@@ -997,6 +1019,8 @@ export class PreviewPanel {
     const themeDesc = document.getElementById('themeDesc');
     const darkToggle = document.getElementById('darkToggle');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const fullscreenIcon = fullscreenBtn?.querySelector('.fullscreen-fab-icon');
+    const fullscreenHint = document.getElementById('fullscreenHint');
 
     const EXPAND_SVG = ${JSON.stringify(EXPAND_SVG)};
     const COMPRESS_SVG = ${JSON.stringify(COMPRESS_SVG)};
@@ -1476,7 +1500,8 @@ export class PreviewPanel {
         darkToggle.classList.toggle('is-light', mode === 'light');
       } else if (msg.type === 'fullscreenChanged') {
         const label = msg.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
-        fullscreenBtn.innerHTML = msg.fullscreen ? COMPRESS_SVG : EXPAND_SVG;
+        if (fullscreenIcon) fullscreenIcon.innerHTML = msg.fullscreen ? COMPRESS_SVG : EXPAND_SVG;
+        if (fullscreenHint) fullscreenHint.textContent = msg.fullscreen ? 'Esc Esc to exit' : 'Fullscreen';
         fullscreenBtn.setAttribute('aria-label', label);
         fullscreenBtn.setAttribute('aria-pressed', msg.fullscreen ? 'true' : 'false');
         fullscreenBtn.setAttribute('title', label);
