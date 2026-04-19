@@ -18,6 +18,22 @@ export class PreviewPanel {
     this.extensionPath = extensionPath;
     this.themeManager = new ThemeManager();
     this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
+    this.panel.webview.onDidReceiveMessage(
+      (msg) => this.handleMessage(msg),
+      null,
+      this.disposables,
+    );
+  }
+
+  private handleMessage(msg: { type?: string; [key: string]: unknown }) {
+    switch (msg?.type) {
+      case 'themeChanged':
+      case 'darkModeChanged':
+        // Posted by the webview on user interaction; no host-side action needed today.
+        return;
+      default:
+        return;
+    }
   }
 
   public static createOrShow(context: vscode.ExtensionContext, document: vscode.TextDocument) {
