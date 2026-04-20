@@ -80,6 +80,16 @@ Active heading is highlighted with a cursor bar that persists across re-renders 
 - Navigate with `Enter` / `Shift+Enter`
 - Match counter shows position (e.g. `3 / 12`)
 
+### Fullscreen Reading Mode
+
+Toggle a distraction-free view in one click or one command.
+
+- Floating button at the bottom-right of the preview, or `Markdown Appealing: Toggle Fullscreen` in the Command Palette
+- Composes VS Code's Zen Mode — hides sidebar, activity bar, status bar, tabs; enters OS fullscreen when your `zenMode.fullScreen` setting is on (default on macOS/Windows)
+- Respects your own `zenMode.*` settings instead of overriding them
+- Double-`Esc` exits (standard Zen Mode behavior)
+- Scroll position, active heading, search state, and theme state all survive entry/exit
+
 ### Dark / Light / System Mode
 
 - **System** (default): follows your OS preference
