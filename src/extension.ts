@@ -34,6 +34,15 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       panel.toggleDarkMode();
+    }),
+
+    vscode.commands.registerCommand('markdownAppealing.toggleFullscreen', () => {
+      const panel = PreviewPanel.currentPanel;
+      if (!panel) {
+        vscode.window.showWarningMessage('Open a preview first.');
+        return;
+      }
+      panel.toggleFullscreen();
     })
   );
 

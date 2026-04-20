@@ -12,12 +12,26 @@ export class PreviewPanel {
   private readonly extensionPath: string;
   private readonly themeManager: ThemeManager;
   private disposables: vscode.Disposable[] = [];
+  private isFullscreen = false;
+  private disposed = false;
 
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this.panel = panel;
     this.extensionPath = extensionPath;
     this.themeManager = new ThemeManager();
     this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
+    this.panel.webview.onDidReceiveMessage(
+      (msg) => this.handleMessage(msg),
+      null,
+      this.disposables,
+    );
+  }
+
+  private handleMessage(msg: { type: string; [key: string]: unknown }) {
+    if (this.disposed) return;
+    if (msg?.type === 'toggleFullscreen') {
+      this.toggleFullscreen();
+    }
   }
 
   public static createOrShow(context: vscode.ExtensionContext, document: vscode.TextDocument) {
@@ -52,6 +66,11 @@ export class PreviewPanel {
     const { html, toc, frontmatter } = parseMarkdown(source);
     this.panel.title = `Preview: ${path.basename(document.fileName)}`;
     this.panel.webview.html = this.buildHtml(html, toc, frontmatter);
+    // Re-render replaces the webview DOM, so the FAB resets to windowed state.
+    // Re-sync from host state so the icon matches actual Zen Mode.
+    if (this.isFullscreen) {
+      this.panel.webview.postMessage({ type: 'fullscreenChanged', fullscreen: true });
+    }
   }
 
   public setTheme(name: string) {
@@ -62,6 +81,18 @@ export class PreviewPanel {
   public toggleDarkMode() {
     const mode = this.themeManager.toggleDarkMode();
     this.panel.webview.postMessage({ type: 'setDarkMode', darkMode: mode });
+  }
+
+  public toggleFullscreen() {
+    if (this.disposed) return;
+    this.isFullscreen = !this.isFullscreen;
+    vscode.commands.executeCommand('workbench.action.toggleZenMode').then(undefined, () => {
+      // Swallow rejection; toggleZenMode is a stable built-in. Optimistic state stays flipped.
+    });
+    this.panel.webview.postMessage({
+      type: 'fullscreenChanged',
+      fullscreen: this.isFullscreen,
+    });
   }
 
   private loadThemeCss(name: string): string {
@@ -128,6 +159,12 @@ export class PreviewPanel {
 
     const tocHtml = this.buildTocHtml(toc);
     const tocCount = toc.length;
+
+    // FAB icon SVGs. Used twice in the output: interpolated into the initial button HTML,
+    // and JSON-stringified into webview-JS constants for the fullscreenChanged icon swap.
+    // Both emissions derive from these single TS sources, so edits propagate to both.
+    const EXPAND_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V3h4"/><path d="M9 3h4v4"/><path d="M3 9v4h4"/><path d="M9 13h4v-4"/></svg>';
+    const COMPRESS_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h3V3"/><path d="M10 3v3h3"/><path d="M6 13v-3H3"/><path d="M13 10h-3v3"/></svg>';
 
     return /*html*/ `<!DOCTYPE html>
 <html lang="en" data-theme="${currentTheme}" ${darkModeAttr}>
@@ -243,6 +280,58 @@ export class PreviewPanel {
       text-align: right;
       line-height: 1.3;
       font-family: var(--font-sans, -apple-system, sans-serif);
+    }
+
+    /* Floating fullscreen FAB */
+    .fullscreen-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 80;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid rgba(0, 0, 0, 0.14);
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--ink);
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+      font-family: var(--font-sans, -apple-system, sans-serif);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    [data-mode="dark"] .fullscreen-fab {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .fullscreen-fab:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+    }
+
+    [data-mode="dark"] .fullscreen-fab:hover {
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .fullscreen-fab-icon {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .fullscreen-fab-icon svg { display: block; }
+
+    .fullscreen-fab-hint {
+      white-space: nowrap;
     }
 
     /* Dark mode toggle switch */
@@ -904,6 +993,12 @@ export class PreviewPanel {
     </div>
   </main>
 
+  <!-- Floating fullscreen toggle -->
+  <button class="fullscreen-fab" id="fullscreenBtn" aria-label="Enter fullscreen" aria-pressed="false" title="Enter fullscreen">
+    <span class="fullscreen-fab-icon">${EXPAND_SVG}</span>
+    <span class="fullscreen-fab-hint" id="fullscreenHint">Fullscreen</span>
+  </button>
+
   <!-- Search overlay -->
   <div class="search-overlay" id="searchOverlay">
     <div class="search-box">
@@ -939,6 +1034,12 @@ export class PreviewPanel {
     const progressFill = document.getElementById('progressFill');
     const themeDesc = document.getElementById('themeDesc');
     const darkToggle = document.getElementById('darkToggle');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const fullscreenIcon = fullscreenBtn?.querySelector('.fullscreen-fab-icon');
+    const fullscreenHint = document.getElementById('fullscreenHint');
+
+    const EXPAND_SVG = ${JSON.stringify(EXPAND_SVG)};
+    const COMPRESS_SVG = ${JSON.stringify(COMPRESS_SVG)};
 
     const THEME_DESCS = {
       clean: 'Airy minimalism for distraction-free reading',
@@ -992,6 +1093,11 @@ export class PreviewPanel {
         type: 'darkModeChanged',
         darkMode: next === 'dark',
       });
+    });
+
+    // ===== Fullscreen toggle =====
+    fullscreenBtn?.addEventListener('click', () => {
+      vscode.postMessage({ type: 'toggleFullscreen' });
     });
 
     // ===== Sidebar collapse/expand =====
@@ -1408,6 +1514,13 @@ export class PreviewPanel {
         const mode = msg.darkMode ? 'dark' : 'light';
         html.setAttribute('data-mode', mode);
         darkToggle.classList.toggle('is-light', mode === 'light');
+      } else if (msg.type === 'fullscreenChanged' && fullscreenBtn) {
+        const label = msg.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
+        if (fullscreenIcon) fullscreenIcon.innerHTML = msg.fullscreen ? COMPRESS_SVG : EXPAND_SVG;
+        if (fullscreenHint) fullscreenHint.textContent = msg.fullscreen ? 'Esc Esc to exit' : 'Fullscreen';
+        fullscreenBtn.setAttribute('aria-label', label);
+        fullscreenBtn.setAttribute('aria-pressed', msg.fullscreen ? 'true' : 'false');
+        fullscreenBtn.setAttribute('title', label);
       }
     });
 
@@ -1497,6 +1610,7 @@ export class PreviewPanel {
   }
 
   private dispose() {
+    this.disposed = true;
     PreviewPanel.currentPanel = undefined;
     this.panel.dispose();
     this.disposables.forEach((d) => d.dispose());

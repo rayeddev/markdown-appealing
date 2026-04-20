@@ -33,6 +33,10 @@ This is a VS Code extension that provides a rich markdown preview via a webview 
 
 **Theme CSS structure:** Each theme file defines variables under `[data-theme="X"][data-mode="light"]`, `[data-theme="X"][data-mode="dark"]`, and `@media (prefers-color-scheme)` for the system-default case. Themes also define element-specific styles (e.g., terminal adds `::before` content to headings).
 
+## Documented Solutions
+
+`docs/solutions/` — documented best practices and patterns (markdown-it rules, theme system, webview), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`). Relevant when implementing or debugging in documented areas.
+
 ## Commits
 
 Keep commit messages short and scannable.
