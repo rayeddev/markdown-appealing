@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.0] - 2026-04-20
+
+### Added
+- Fullscreen reading mode: `Markdown Appealing: Toggle Fullscreen` command + floating button at the preview's bottom-right corner
+- FAB shows expand/compress icon with a hint label (`Fullscreen` → `Esc Esc to exit`), per-mode contrast tuning, and accessible name
+- Host ↔ webview message infrastructure (`onDidReceiveMessage`) — prerequisite for future host-driven UI updates
+
+### Notes
+- Fullscreen composes `workbench.action.toggleZenMode` rather than the HTML Fullscreen API, which is blocked by VS Code's webview sandbox. Respects your own `zenMode.*` settings.
+
 ## [0.6.0] - 2026-04-18
 
 ### Added
