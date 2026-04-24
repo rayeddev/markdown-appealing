@@ -23,12 +23,26 @@ jobs:
         with:
           name: markdown-appealing
           path: "*.vsix"
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { flag=1; next }
+            flag && /^## \[/ { exit }
+            flag { print }
+          ' CHANGELOG.md > .release-body.md
+          if [ ! -s .release-body.md ]; then
+            echo "::error::No CHANGELOG.md section found for version $VERSION"
+            exit 1
+          fi
+          echo "--- release notes for v$VERSION ---"
+          cat .release-body.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: "*.vsix"
           generate_release_notes: false
-          body_path: .release-notes.md
+          body_path: .release-body.md
       - name: Publish to Marketplace
         if: env.VSCE_PAT != ''
         run: npx vsce publish
