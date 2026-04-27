@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0] - 2026-04-27
+
+### Added
+- Syntax highlighting for fenced code blocks via highlight.js — covers ~36 popular languages including JS/TS, Python, Go, Rust, Bash, JSON, CSS, HTML, SQL, and more (#15)
+- Light + dark token palettes tuned to read across all three themes; per-theme refinement can layer on later
+- Theme + dark/light mode preference now persists across sessions via `globalState` (#16)
+- Webview toolbar theme/mode clicks also persist (previously dropped silently by the message handler)
+
+### Notes
+- Bundle size grew from ~300KB to ~665KB — the cost of bundling highlight.js's common-language pack. Shiki would have been ~2MB; deferred.
+
 ## [0.8.1] - 2026-04-27
 
 ### Distribution

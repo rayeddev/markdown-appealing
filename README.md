@@ -106,6 +106,7 @@ Toggle a distraction-free view in one click or one command.
 - **Light**: forced light mode
 - Cycles through: System -> Dark -> Light -> System
 - Each theme has carefully tuned palettes for both modes
+- Selected theme + mode **persist across sessions** — your pick survives panel close and reopen
 
 ### Font Customization
 
@@ -123,6 +124,8 @@ Configure fonts and sizes via VS Code settings:
 
 ### Code Blocks
 
+- **Syntax highlighting** for ~36 popular languages (JS/TS, Python, Go, Rust, Bash, JSON, CSS, HTML, SQL, and more) via highlight.js
+- Light + dark token palettes tuned to read across all three themes
 - Language label in header
 - **Copy button** with "Copied" feedback
 - **Line numbers** (visible in Terminal theme)
