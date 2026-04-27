@@ -48,3 +48,10 @@ jobs:
         run: npx vsce publish
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish to Open VSX (Cursor + others)
+        if: env.OVSX_PAT != ''
+        run: |
+          npx ovsx create-namespace rayeddev -p "$OVSX_PAT" || true
+          npx ovsx publish *.vsix -p "$OVSX_PAT"
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
