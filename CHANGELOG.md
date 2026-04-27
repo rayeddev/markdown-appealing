@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.1] - 2026-04-27
+
+### Distribution
+- Now also published to [Open VSX Registry](https://open-vsx.org/extension/rayeddev/markdown-appealing) — installable in Cursor, VSCodium, Gitpod, and other VS Code-compatible editors
+
 ## [0.8.0] - 2026-04-27
 
 ### Added
