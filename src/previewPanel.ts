@@ -15,10 +15,10 @@ export class PreviewPanel {
   private isFullscreen = false;
   private disposed = false;
 
-  private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
+  private constructor(panel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     this.panel = panel;
-    this.extensionPath = extensionPath;
-    this.themeManager = new ThemeManager();
+    this.extensionPath = context.extensionPath;
+    this.themeManager = new ThemeManager(context.globalState);
     this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
     this.panel.webview.onDidReceiveMessage(
       (msg) => this.handleMessage(msg),
@@ -31,6 +31,10 @@ export class PreviewPanel {
     if (this.disposed) return;
     if (msg?.type === 'toggleFullscreen') {
       this.toggleFullscreen();
+    } else if (msg?.type === 'themeChanged' && typeof msg.theme === 'string') {
+      this.themeManager.setTheme(msg.theme);
+    } else if (msg?.type === 'darkModeChanged' && typeof msg.darkMode === 'boolean') {
+      this.themeManager.setDarkMode(msg.darkMode);
     }
   }
 
@@ -57,7 +61,7 @@ export class PreviewPanel {
       },
     );
 
-    PreviewPanel.currentPanel = new PreviewPanel(panel, context.extensionPath);
+    PreviewPanel.currentPanel = new PreviewPanel(panel, context);
     PreviewPanel.currentPanel.update(document);
   }
 
