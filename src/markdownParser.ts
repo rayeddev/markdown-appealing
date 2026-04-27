@@ -1,5 +1,7 @@
 import MarkdownIt from 'markdown-it';
 
+type Token = MarkdownIt.Token;
+
 export interface TocEntry {
   level: number;
   id: string;
@@ -35,6 +37,56 @@ function extractFrontmatter(source: string): { frontmatter: FrontmatterData; bod
 
   const body = source.slice(match[0].length);
   return { frontmatter: pairs, body };
+}
+
+// Inline metadata grid helpers.
+// Detect logical lines shaped like `**Label:** value` so a run of them can be rendered
+// as a compact two-column grid. A "logical line" is a softbreak-separated chunk of
+// inline children OR an entire single-paragraph inline child list.
+type MetaSegmentMatch = { label: string; valueChildren: Token[] };
+
+function splitInlineAtBreaks(children: Token[]): Token[][] {
+  const chunks: Token[][] = [];
+  let current: Token[] = [];
+  for (const child of children) {
+    if (child.type === 'softbreak' || child.type === 'hardbreak') {
+      chunks.push(current);
+      current = [];
+    } else {
+      current.push(child);
+    }
+  }
+  chunks.push(current);
+  return chunks;
+}
+
+function matchMetaSegment(chunkRaw: Token[]): MetaSegmentMatch | null {
+  // markdown-it emits empty `text` tokens between inline boundary markers; strip leading
+  // ones so the structural pattern check below is stable.
+  let start = 0;
+  while (start < chunkRaw.length && chunkRaw[start].type === 'text' && chunkRaw[start].content === '') {
+    start++;
+  }
+  const chunk = start === 0 ? chunkRaw : chunkRaw.slice(start);
+
+  if (chunk.length < 4) return null;
+  if (chunk[0].type !== 'strong_open') return null;
+  if (chunk[1].type !== 'text') return null;
+
+  const labelText = chunk[1].content;
+  if (labelText.length < 2 || !labelText.endsWith(':')) return null;
+  const label = labelText.slice(0, -1).trim();
+  if (!label) return null;
+
+  if (chunk[2].type !== 'strong_close') return null;
+  if (chunk[3].type !== 'text' || !chunk[3].content.startsWith(' ')) return null;
+
+  // After the leading-space carrier, ensure something remains. If the first text token
+  // is whitespace-only and has no following children, treat as empty value (no match).
+  const firstValueText = chunk[3].content.replace(/^ +/, '');
+  if (firstValueText.length === 0 && chunk.length === 4) return null;
+
+  return { label, valueChildren: chunk.slice(3) };
 }
 
 const md = new MarkdownIt({
@@ -120,6 +172,95 @@ md.core.ruler.after('inline', 'gh_alert', (state) => {
     closeHtml.content = '</div>\n';
     closeHtml.block = true;
     tokens[adjustedCloseIdx] = closeHtml;
+  }
+  return true;
+});
+
+// Inline metadata grid: rewrite runs of 2+ `**Label:** value` lines into a compact grid.
+// Mirrors the gh_alert pattern (post-inline core rule, html_block boundary replacement)
+// but matches across paragraph runs, not single block constructs.
+md.core.ruler.after('inline', 'inline_metadata_grid', (state) => {
+  const tokens = state.tokens;
+  let i = 0;
+
+  while (i < tokens.length) {
+    if (tokens[i].type !== 'paragraph_open' || tokens[i].level !== 0) {
+      i++;
+      continue;
+    }
+
+    type RunParagraph = { startIdx: number; endIdx: number; segments: MetaSegmentMatch[] };
+    const runParagraphs: RunParagraph[] = [];
+    let totalSegments = 0;
+    let j = i;
+
+    // Walk forward over consecutive top-level paragraphs whose inline children split
+    // cleanly into 1+ matching segments.
+    while (
+      j < tokens.length &&
+      tokens[j].type === 'paragraph_open' &&
+      tokens[j].level === 0
+    ) {
+      const inlineTok = tokens[j + 1];
+      const closeTok = tokens[j + 2];
+      if (
+        !inlineTok ||
+        inlineTok.type !== 'inline' ||
+        !inlineTok.children ||
+        !closeTok ||
+        closeTok.type !== 'paragraph_close'
+      ) {
+        break;
+      }
+
+      const chunks = splitInlineAtBreaks(inlineTok.children);
+      const segments: MetaSegmentMatch[] = [];
+      let cleanSplit = true;
+      for (const chunk of chunks) {
+        const seg = matchMetaSegment(chunk);
+        if (!seg) {
+          cleanSplit = false;
+          break;
+        }
+        segments.push(seg);
+      }
+      if (!cleanSplit || segments.length === 0) break;
+
+      runParagraphs.push({ startIdx: j, endIdx: j + 2, segments });
+      totalSegments += segments.length;
+      j += 3;
+    }
+
+    // Singleton exclusion — a run requires 2+ matching segments to fuse.
+    if (totalSegments < 2) {
+      i = j > i ? j : i + 1;
+      continue;
+    }
+
+    let html = '<div class="meta-grid">\n';
+    for (const para of runParagraphs) {
+      for (const seg of para.segments) {
+        const valueHtml = state.md.renderer
+          .renderInline(seg.valueChildren, state.md.options, state.env)
+          .replace(/^ +/, '');
+        html +=
+          '<div class="meta-row">' +
+          `<span class="meta-key">${escapeHtml(seg.label)}</span>` +
+          `<span class="meta-value">${valueHtml}</span>` +
+          '</div>\n';
+      }
+    }
+    html += '</div>\n';
+
+    const block = new state.Token('html_block', '', 0);
+    block.content = html;
+    block.block = true;
+
+    const rangeStart = i;
+    const rangeEnd = runParagraphs[runParagraphs.length - 1].endIdx + 1;
+    tokens.splice(rangeStart, rangeEnd - rangeStart, block);
+
+    i = rangeStart + 1;
   }
   return true;
 });

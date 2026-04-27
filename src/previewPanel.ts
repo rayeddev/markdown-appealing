@@ -749,6 +749,47 @@ export class PreviewPanel {
       word-break: break-word;
     }
 
+    /* ===== Inline metadata grid ===== */
+    /* Same family as .frontmatter-card, compact padding for body placement. */
+    .meta-grid {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.25em 0.75em;
+      margin: 1em 0;
+      font-size: 0.85em;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 0.85em;
+      padding: 0.2em 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta-row:last-child {
+      border-bottom: none;
+    }
+
+    .meta-key {
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      min-width: 7em;
+      flex-shrink: 0;
+      align-self: start;
+    }
+
+    .meta-value {
+      color: var(--ink-body);
+      word-break: break-word;
+    }
+
+    /* Inline elements inside the value cell inherit document styling but
+       drop paragraph margins (they shouldn't exist anyway, but defensive). */
+    .meta-value p {
+      margin: 0;
+    }
+
     /* ===== Mermaid diagram card ===== */
     .mermaid-card {
       margin: 24px 0;
