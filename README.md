@@ -80,6 +80,15 @@ Active heading is highlighted with a cursor bar that persists across re-renders 
 - Navigate with `Enter` / `Shift+Enter`
 - Match counter shows position (e.g. `3 / 12`)
 
+### Inline Metadata Grid
+
+Runs of `**Label:** value` lines render as a compact two-column grid — the same visual family as the YAML frontmatter card, with tighter padding so it sits naturally mid-document.
+
+- Triggers on **2 or more** consecutive matching lines (singletons stay as regular paragraphs, so `**Note:** see below.` is unaffected)
+- Works in two source forms — multiple lines in one paragraph (softbreak-separated) or multiple paragraphs separated by blank lines
+- Values render as inline markdown — links, inline code, emphasis all flow through
+- No new syntax to learn — existing `**Label:** value` patterns just look better
+
 ### Fullscreen Reading Mode
 
 Toggle a distraction-free view in one click or one command.

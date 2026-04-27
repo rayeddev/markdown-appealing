@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.0] - 2026-04-27
+
+### Added
+- Inline metadata grid: runs of 2+ `**Label:** value` lines now render as a compact two-column grid that visually unifies with the YAML frontmatter card (#30)
+- Detects both forms — softbreak-separated lines in one paragraph, and consecutive paragraphs separated by blank lines
+- Values render as inline markdown — links, inline code, emphasis all work inside grid cells
+- Singletons stay as paragraphs; lines with empty values, colon outside the bold (`**Label**:`), or multi-colon endings (`Status::`) are correctly left as prose
+- Top-level only — runs inside lists, blockquotes, and code fences are unaffected
+
 ## [0.7.0] - 2026-04-20
 
 ### Added
