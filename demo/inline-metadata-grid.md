@@ -49,3 +49,62 @@ Some closing prose after the metadata block.
 **Repo:** [markdown-appealing](https://github.com/rayeddev/markdown-appealing)
 **Branch:** `feat/inline-metadata-grid`
 **Highlight:** *italic* and **bold** and `code` together
+
+## Negative cases (must NOT render as a grid)
+
+### Empty values
+
+A line with no value text after the colon must not contribute to a run. The block below should render as two regular bold-prefixed paragraphs, not a grid.
+
+**Empty:**
+**Group:** g1
+
+### Colon outside the bold
+
+`**Status**: verified` (colon outside `**`) is treated as prose. Should render as two regular paragraphs.
+
+**Status**: verified
+**Group**: g1
+
+### Trailing prose after a softbreak — paragraph rejected
+
+The first paragraph mixes 2 matching lines with trailing prose. The whole paragraph stays as prose.
+
+**Phase:** rollout
+**Window:** today
+trailing closing remark.
+
+### Two single-match paragraphs separated by prose
+
+Each is a singleton; neither should fuse.
+
+**Solo A:** alpha
+
+prose between them.
+
+**Solo B:** beta
+
+### Multi-colon label (`Status::`) is rejected
+
+**Status::** verified
+**Group:** g1
+
+## Integration cases
+
+### Inside a GitHub alert (must NOT promote to grid)
+
+> [!NOTE]
+> **Status:** inside an alert
+> **Group:** still inside
+
+### Inside a code fence (must NOT promote to grid)
+
+```
+**Status:** literal
+**Group:** literal
+```
+
+### Inside a blockquote (must NOT promote to grid)
+
+> **Status:** inside blockquote
+> **Group:** inside blockquote

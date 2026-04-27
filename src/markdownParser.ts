@@ -44,6 +44,7 @@ function extractFrontmatter(source: string): { frontmatter: FrontmatterData; bod
 // as a compact two-column grid. A "logical line" is a softbreak-separated chunk of
 // inline children OR an entire single-paragraph inline child list.
 type MetaSegmentMatch = { label: string; valueChildren: Token[] };
+type MetaRunParagraph = { endIdx: number; segments: MetaSegmentMatch[] };
 
 function splitInlineAtBreaks(children: Token[]): Token[][] {
   const chunks: Token[][] = [];
@@ -73,8 +74,10 @@ function matchMetaSegment(chunkRaw: Token[]): MetaSegmentMatch | null {
   if (chunk[0].type !== 'strong_open') return null;
   if (chunk[1].type !== 'text') return null;
 
+  // Label must end in exactly one colon. `Status::` (or longer) is rejected so a label
+  // line cannot accidentally swallow an embedded code-like marker.
   const labelText = chunk[1].content;
-  if (labelText.length < 2 || !labelText.endsWith(':')) return null;
+  if (labelText.length < 2 || !labelText.endsWith(':') || labelText.endsWith('::')) return null;
   const label = labelText.slice(0, -1).trim();
   if (!label) return null;
 
@@ -189,13 +192,13 @@ md.core.ruler.after('inline', 'inline_metadata_grid', (state) => {
       continue;
     }
 
-    type RunParagraph = { startIdx: number; endIdx: number; segments: MetaSegmentMatch[] };
-    const runParagraphs: RunParagraph[] = [];
+    const runParagraphs: MetaRunParagraph[] = [];
     let totalSegments = 0;
     let j = i;
 
     // Walk forward over consecutive top-level paragraphs whose inline children split
-    // cleanly into 1+ matching segments.
+    // cleanly into 1+ matching segments. A non-paragraph block (heading, hr, list,
+    // code fence) breaks the run because a fused grid must be visually contiguous.
     while (
       j < tokens.length &&
       tokens[j].type === 'paragraph_open' &&
@@ -226,12 +229,14 @@ md.core.ruler.after('inline', 'inline_metadata_grid', (state) => {
       }
       if (!cleanSplit || segments.length === 0) break;
 
-      runParagraphs.push({ startIdx: j, endIdx: j + 2, segments });
+      runParagraphs.push({ endIdx: j + 2, segments });
       totalSegments += segments.length;
       j += 3;
     }
 
     // Singleton exclusion — a run requires 2+ matching segments to fuse.
+    // When a singleton was scanned (j > i), skip past it so the outer walker doesn't
+    // re-enter the same matched paragraph.
     if (totalSegments < 2) {
       i = j > i ? j : i + 1;
       continue;
