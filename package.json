@@ -100,6 +100,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "mermaid": "^11.14.0"
   }

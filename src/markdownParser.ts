@@ -1,4 +1,5 @@
 import MarkdownIt from 'markdown-it';
+import hljs from 'highlight.js/lib/common';
 
 type Token = MarkdownIt.Token;
 
@@ -275,11 +276,22 @@ md.renderer.rules.fence = (tokens, idx) => {
   const token = tokens[idx];
   const lang = token.info.trim();
   const content = token.content;
-  const escaped = escapeHtml(content);
 
   // Mermaid blocks get a card container instead of a code block
   if (lang === 'mermaid' || lang.startsWith('mermaid ')) {
-    return `<div class="mermaid-card"><div class="mermaid-render"><pre class="mermaid">${escaped}</pre></div></div>`;
+    return `<div class="mermaid-card"><div class="mermaid-render"><pre class="mermaid">${escapeHtml(content)}</pre></div></div>`;
+  }
+
+  // Syntax-highlight when the language is known to highlight.js; otherwise fall back to escaped text.
+  // `ignoreIllegals` keeps malformed snippets from throwing — they still render, just less precisely.
+  let codeHtml: string;
+  let langClass = '';
+  if (lang && hljs.getLanguage(lang)) {
+    codeHtml = hljs.highlight(content, { language: lang, ignoreIllegals: true }).value;
+    langClass = ` class="hljs language-${lang}"`;
+  } else {
+    codeHtml = escapeHtml(content);
+    if (lang) langClass = ` class="language-${lang}"`;
   }
 
   const lines = content.split('\n');
@@ -295,7 +307,7 @@ md.renderer.rules.fence = (tokens, idx) => {
   </div>
   <div class="code-block-body">
     <div class="code-line-numbers">${lineNums}</div>
-    <pre><code>${escaped}</code></pre>
+    <pre><code${langClass}>${codeHtml}</code></pre>
   </div>
 </div>`;
 };
