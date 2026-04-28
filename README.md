@@ -2,6 +2,8 @@
 
 **Beautiful markdown preview for VS Code** with multiple themes, sidebar table of contents, search, and dark/light mode toggle.
 
+[![Install in VS Code](https://img.shields.io/badge/Install%20in-VS%20Code-0078d7?logo=visualstudiocode&logoColor=white)](vscode:extension/rayeddev.markdown-appealing)  [![Install in Cursor](https://img.shields.io/badge/Install%20in-Cursor-black?logo=cursor&logoColor=white)](cursor:extension/rayeddev.markdown-appealing)
+
 Built for the AI era where we spend more time *reading* markdown than writing it. Every AI response, every `.md` file in a repo, every context window -- it's all markdown. This extension makes that reading experience dramatically better.
 
 ![Markdown Appealing Demo](demo/markdown-appealing.gif)
