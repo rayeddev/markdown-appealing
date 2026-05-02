@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.9.1] - 2026-05-02
+
+### Fixed
+- Preview now opens on `SKILL.md`, `AGENTS.md`, and any other `.md` files whose `languageId` is overridden by another extension — fall back to file-extension matching instead of relying on `languageId === 'markdown'` alone
+
 ## [0.9.0] - 2026-04-27
 
 ### Added

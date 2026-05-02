@@ -2,7 +2,7 @@
   "name": "markdown-appealing",
   "displayName": "Markdown Appealing",
   "description": "Beautiful markdown preview with multiple themes, dark/light toggle, and sidebar table of contents navigation.",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "publisher": "rayeddev",
   "repository": {
     "type": "git",
@@ -78,7 +78,7 @@
         "command": "markdownAppealing.openPreview",
         "key": "ctrl+shift+v",
         "mac": "cmd+shift+v",
-        "when": "editorLangId == markdown"
+        "when": "editorLangId == markdown || resourceExtname =~ /\\.(md|mkd|mdwn|mdown|markdown|mdx)/i"
       }
     ]
   },
