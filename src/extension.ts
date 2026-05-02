@@ -1,11 +1,21 @@
 import * as vscode from 'vscode';
 import { PreviewPanel } from './previewPanel';
 
+// Some files (e.g. SKILL.md, AGENTS.md) get claimed by other extensions and report
+// a non-markdown languageId, even though they are markdown by extension. Accept both.
+const MARKDOWN_EXTENSIONS = new Set(['.md', '.mkd', '.mdwn', '.mdown', '.markdown', '.mdx']);
+
+function isMarkdownDoc(doc: vscode.TextDocument): boolean {
+  if (doc.languageId === 'markdown') return true;
+  const ext = doc.fileName.slice(doc.fileName.lastIndexOf('.')).toLowerCase();
+  return MARKDOWN_EXTENSIONS.has(ext);
+}
+
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('markdownAppealing.openPreview', () => {
       const editor = vscode.window.activeTextEditor;
-      if (!editor || editor.document.languageId !== 'markdown') {
+      if (!editor || !isMarkdownDoc(editor.document)) {
         vscode.window.showWarningMessage('Open a markdown file first.');
         return;
       }
@@ -51,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('markdownAppealing') && PreviewPanel.currentPanel) {
         const editor = vscode.window.activeTextEditor;
-        if (editor?.document.languageId === 'markdown') {
+        if (editor && isMarkdownDoc(editor.document)) {
           PreviewPanel.currentPanel.update(editor.document);
         }
       }
@@ -61,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Live update on text change
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((e) => {
-      if (e.document.languageId === 'markdown' && PreviewPanel.currentPanel) {
+      if (isMarkdownDoc(e.document) && PreviewPanel.currentPanel) {
         PreviewPanel.currentPanel.update(e.document);
       }
     })
@@ -70,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Update when switching to a different markdown file
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
-      if (editor?.document.languageId === 'markdown' && PreviewPanel.currentPanel) {
+      if (editor && isMarkdownDoc(editor.document) && PreviewPanel.currentPanel) {
         PreviewPanel.currentPanel.update(editor.document);
       }
     })
