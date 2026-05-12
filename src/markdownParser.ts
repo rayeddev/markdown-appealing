@@ -271,6 +271,69 @@ md.core.ruler.after('inline', 'inline_metadata_grid', (state) => {
   return true;
 });
 
+// ===== WikiLink support: [[page]], [[page#section]], [[page|alias]] =====
+// Rendered as clickable links with `data-wikilink` attribute for navigation.
+const WIKILINK_RE = /\[\[([^\]\|#]+?)(?:#([^\]|]+?))?(?:\|([^\]]+?))?\]\]/g;
+
+// Inline rule: match [[...]] at the current position
+function wikilinkInline(state: MarkdownIt.StateInline, silent: boolean): boolean {
+  const pos = state.pos;
+  const max = state.posMax;
+  const src = state.src;
+
+  // Need at least [[x]]
+  if (pos + 4 > max) return false;
+  if (src.charCodeAt(pos) !== 0x5B /* [ */ || src.charCodeAt(pos + 1) !== 0x5B) return false;
+
+  // Find the closing ]]
+  let end = -1;
+  for (let i = pos + 2; i < max - 1; i++) {
+    if (src.charCodeAt(i) === 0x5D && src.charCodeAt(i + 1) === 0x5D) {
+      end = i;
+      break;
+    }
+  }
+  if (end === -1) return false;
+
+  const raw = src.slice(pos + 2, end);
+
+  // Parse: target#section|alias
+  const match = raw.match(/^([^#|]+?)(?:#([^|]+?))?(?:\|(.+))?$/);
+  if (!match) return false;
+
+  const target = match[1].trim();
+  if (!target) return false;
+  const section = match[2] || '';
+  const alias = match[3] || '';
+
+  if (silent) return true;
+
+  const displayText = alias || target;
+
+  const token = state.push('wikilink', '', 0);
+  token.attrSet('data-wikilink', target);
+  if (section) token.attrSet('data-wikilink-section', section);
+  token.attrSet('title', section ? `${target}#${section}` : target);
+  token.content = displayText;
+
+  state.pos = end + 2;
+  return true;
+}
+
+// Renderer for wikilink tokens
+function renderWikilink(tokens: Token[], idx: number): string {
+  const token = tokens[idx];
+  const target = token.attrGet('data-wikilink') || '';
+  const section = token.attrGet('data-wikilink-section') || '';
+  const title = token.attrGet('title') || '';
+  const text = token.content;
+  const sectionAttr = section ? ` data-wikilink-section="${escapeHtml(section)}"` : '';
+  return `<a href="#" class="wikilink" data-wikilink="${escapeHtml(target)}"${sectionAttr} title="${escapeHtml(title)}">${escapeHtml(text)}</a>`;
+}
+
+md.inline.ruler.after('link', 'wikilink', wikilinkInline);
+md.renderer.rules.wikilink = renderWikilink;
+
 // Custom fence renderer — wraps code blocks with header (lang + copy button) and line numbers
 md.renderer.rules.fence = (tokens, idx) => {
   const token = tokens[idx];
