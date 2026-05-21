@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.0] - 2026-05-21
+
+### Added
+- Obsidian-style `[[wikilink]]` navigation: click a `[[page]]` link to open `page.md` in-place inside the preview (#40, thanks @pallidev)
+- Supports `[[page#section]]` heading targets and `[[page|alias]]` display aliases
+- File resolution searches the current document's directory first, then a `wiki/` subdirectory, then workspace-wide
+- Browser-like history: `<` / `>` toolbar buttons and `Alt+Left` / `Alt+Right` shortcuts to move back and forward; opening a new link truncates forward history
+- Styling tuned per theme + dark/light mode (dashed underline with subtle `[[ ]]` markers)
+
 ## [0.9.1] - 2026-05-02
 
 ### Fixed
