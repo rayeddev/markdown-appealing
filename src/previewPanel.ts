@@ -14,6 +14,9 @@ export class PreviewPanel {
   private disposables: vscode.Disposable[] = [];
   private isFullscreen = false;
   private disposed = false;
+  private currentDocument: vscode.TextDocument | undefined;
+  private navHistory: vscode.Uri[] = [];
+  private navIndex = -1;
 
   private constructor(panel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     this.panel = panel;
@@ -35,6 +38,12 @@ export class PreviewPanel {
       this.themeManager.setTheme(msg.theme);
     } else if (msg?.type === 'darkModeChanged' && typeof msg.darkMode === 'boolean') {
       this.themeManager.setDarkMode(msg.darkMode);
+    } else if (msg?.type === 'openWikilink' && typeof msg.target === 'string') {
+      this.openWikilink(msg.target, typeof msg.section === 'string' ? msg.section : undefined);
+    } else if (msg?.type === 'navigateBack') {
+      this.navigateBack();
+    } else if (msg?.type === 'navigateForward') {
+      this.navigateForward();
     }
   }
 
@@ -62,10 +71,12 @@ export class PreviewPanel {
     );
 
     PreviewPanel.currentPanel = new PreviewPanel(panel, context);
+    PreviewPanel.currentPanel.navPush(document.uri);
     PreviewPanel.currentPanel.update(document);
   }
 
   public update(document: vscode.TextDocument) {
+    this.currentDocument = document;
     const source = document.getText();
     const { html, toc, frontmatter } = parseMarkdown(source);
     this.panel.title = `Preview: ${path.basename(document.fileName)}`;
@@ -273,7 +284,41 @@ export class PreviewPanel {
     .toolbar-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    /* Navigation buttons */
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--hover-bg);
+      color: var(--ink);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .nav-separator {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 4px;
     }
 
     .theme-desc {
@@ -822,6 +867,35 @@ export class PreviewPanel {
       word-break: break-word;
     }
 
+    /* ===== WikiLink styling ===== */
+    .content-inner a.wikilink {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--accent-dim);
+      padding: 0 2px;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .content-inner a.wikilink:hover {
+      background: var(--accent-bg);
+      border-bottom-style: solid;
+      border-bottom-color: var(--accent);
+    }
+
+    .content-inner a.wikilink::before {
+      content: "\[\[";
+      opacity: 0.4;
+      font-size: 0.85em;
+    }
+
+    .content-inner a.wikilink::after {
+      content: "\]\]";
+      opacity: 0.4;
+      font-size: 0.85em;
+    }
+
     /* ===== Inline metadata grid ===== */
     /* Same family as .frontmatter-card, compact padding for body placement. */
     .meta-grid {
@@ -1095,6 +1169,17 @@ export class PreviewPanel {
         <kbd>/</kbd> search
       </div>
       <div class="toolbar-right">
+        <button class="nav-btn" id="navBack" disabled title="Back (Alt+Left)">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+        </button>
+        <button class="nav-btn" id="navForward" disabled title="Forward (Alt+Right)">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+        </button>
+        <div class="nav-separator"></div>
+        <div class="nav-hints" style="margin-left:0;opacity:0.5">
+          <kbd>Alt</kbd><kbd>←</kbd><kbd>→</kbd> navigate
+        </div>
+        <div class="nav-separator"></div>
         <span class="theme-desc" id="themeDesc" style="display:none">${this.getThemeDesc(currentTheme)}</span>
         <button class="dark-toggle ${!effectiveDark ? 'is-light' : ''}" id="darkToggle">
           <div class="toggle-knob"></div>
@@ -1184,6 +1269,39 @@ export class PreviewPanel {
         }, 1500);
       });
     };
+
+    // ===== WikiLink click handler =====
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('.wikilink');
+      if (!link) return;
+      e.preventDefault();
+      const target = link.getAttribute('data-wikilink');
+      const section = link.getAttribute('data-wikilink-section') || undefined;
+      if (target) {
+        vscode.postMessage({ type: 'openWikilink', target, section });
+      }
+    });
+
+    // ===== Navigation back/forward =====
+    const navBackBtn = document.getElementById('navBack');
+    const navForwardBtn = document.getElementById('navForward');
+
+    navBackBtn?.addEventListener('click', () => {
+      vscode.postMessage({ type: 'navigateBack' });
+    });
+
+    navForwardBtn?.addEventListener('click', () => {
+      vscode.postMessage({ type: 'navigateForward' });
+    });
+
+    // Handle nav state changes from extension
+    window.addEventListener('message', (e) => {
+      const msg = e.data;
+      if (msg.type === 'navStateChanged') {
+        if (navBackBtn) navBackBtn.disabled = !msg.canGoBack;
+        if (navForwardBtn) navForwardBtn.disabled = !msg.canGoForward;
+      }
+    });
 
     // ===== Theme switching via toolbar =====
     document.querySelectorAll('[data-theme]').forEach(btn => {
@@ -1564,6 +1682,18 @@ export class PreviewPanel {
         return;
       }
 
+      // Alt+Left = back, Alt+Right = forward
+      if (e.altKey && e.key === 'ArrowLeft') {
+        e.preventDefault();
+        vscode.postMessage({ type: 'navigateBack' });
+        return;
+      }
+      if (e.altKey && e.key === 'ArrowRight') {
+        e.preventDefault();
+        vscode.postMessage({ type: 'navigateForward' });
+        return;
+      }
+
       // Skip if no headings or modifier keys are held
       if (headings.length === 0) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -1713,6 +1843,119 @@ export class PreviewPanel {
     };
 
     return root.map(n => renderNode(n, 0)).join('');
+  }
+
+  private async openWikilink(target: string, section?: string): Promise<void> {
+    if (!this.currentDocument) return;
+
+    // Base name without extension for matching
+    const baseName = target.replace(/\.(md|markdown|mdx|mkd)$/i, '');
+    const candidates = [
+      baseName + '.md',
+      baseName + '.markdown',
+      baseName + '.mdx',
+      baseName + '.mkd',
+      target, // in case the user included the extension
+    ];
+
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) {
+      vscode.window.showWarningMessage(`Cannot resolve wiki link: no workspace open.`);
+      return;
+    }
+
+    const resolvedUri = await this.resolveWikilink(candidates);
+    if (!resolvedUri) {
+      vscode.window.showWarningMessage(
+        `Wiki link target not found: ${target}. Create the file and try again.`,
+      );
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(resolvedUri);
+    // Push to navigation history
+    this.navPush(resolvedUri);
+    // Update the preview panel with the new document (no editor tab switch)
+    this.update(doc);
+    // Notify webview to update back/forward button states
+    this.panel.webview.postMessage({
+      type: 'navStateChanged',
+      canGoBack: this.navCanGoBack(),
+      canGoForward: this.navCanGoForward(),
+    });
+  }
+
+  private navPush(uri: vscode.Uri): void {
+    // If we navigated back and then click a new link, truncate forward history
+    if (this.navIndex < this.navHistory.length - 1) {
+      this.navHistory = this.navHistory.slice(0, this.navIndex + 1);
+    }
+    this.navHistory.push(uri);
+    this.navIndex = this.navHistory.length - 1;
+  }
+
+  private navCanGoBack(): boolean {
+    return this.navIndex > 0;
+  }
+
+  private navCanGoForward(): boolean {
+    return this.navIndex < this.navHistory.length - 1;
+  }
+
+  private async navigateBack(): Promise<void> {
+    if (!this.navCanGoBack()) return;
+    this.navIndex--;
+    const uri = this.navHistory[this.navIndex];
+    const doc = await vscode.workspace.openTextDocument(uri);
+    this.currentDocument = doc;
+    this.update(doc);
+    this.panel.webview.postMessage({
+      type: 'navStateChanged',
+      canGoBack: this.navCanGoBack(),
+      canGoForward: this.navCanGoForward(),
+    });
+  }
+
+  private async navigateForward(): Promise<void> {
+    if (!this.navCanGoForward()) return;
+    this.navIndex++;
+    const uri = this.navHistory[this.navIndex];
+    const doc = await vscode.workspace.openTextDocument(uri);
+    this.currentDocument = doc;
+    this.update(doc);
+    this.panel.webview.postMessage({
+      type: 'navStateChanged',
+      canGoBack: this.navCanGoBack(),
+      canGoForward: this.navCanGoForward(),
+    });
+  }
+
+  private async resolveWikilink(candidates: string[]): Promise<vscode.Uri | undefined> {
+    if (!this.currentDocument) return undefined;
+
+    for (const candidate of candidates) {
+      // Try direct path relative to current document's directory
+      const currentDir = path.dirname(this.currentDocument.uri.fsPath);
+      const directPath = path.join(currentDir, candidate);
+      if (fs.existsSync(directPath)) {
+        return vscode.Uri.file(directPath);
+      }
+
+      // Try relative to wiki/ subdirectory of current document
+      const wikiPath = path.join(currentDir, 'wiki', candidate);
+      if (fs.existsSync(wikiPath)) {
+        return vscode.Uri.file(wikiPath);
+      }
+
+      // Search workspace-wide using findFiles
+      const pattern = `**/${candidate}`;
+      const found = await vscode.workspace.findFiles(pattern, '**/node_modules/**', 1);
+      if (found.length > 0) {
+        return found[0];
+      }
+    }
+
+    return undefined;
   }
 
   private escapeHtml(text: string): string {
