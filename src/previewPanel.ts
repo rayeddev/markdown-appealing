@@ -17,6 +17,8 @@ export class PreviewPanel {
   private currentDocument: vscode.TextDocument | undefined;
   private navHistory: vscode.Uri[] = [];
   private navIndex = -1;
+  // Heading slug to scroll to after the next render (set before update(), consumed by buildHtml).
+  private pendingSection: string | undefined;
 
   private constructor(panel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     this.panel = panel;
@@ -40,6 +42,8 @@ export class PreviewPanel {
       this.themeManager.setDarkMode(msg.darkMode);
     } else if (msg?.type === 'openWikilink' && typeof msg.target === 'string') {
       this.openWikilink(msg.target, typeof msg.section === 'string' ? msg.section : undefined);
+    } else if (msg?.type === 'openMarkdownLink' && typeof msg.href === 'string') {
+      this.openMarkdownLink(msg.href, typeof msg.section === 'string' ? msg.section : undefined);
     } else if (msg?.type === 'navigateBack') {
       this.navigateBack();
     } else if (msg?.type === 'navigateForward') {
@@ -142,6 +146,10 @@ export class PreviewPanel {
     toc: { level: number; id: string; text: string }[],
     frontmatter?: Record<string, string> | null,
   ): string {
+    // Consume any one-shot scroll target queued before this render (e.g. a link with #section).
+    const pendingSection = this.pendingSection ?? '';
+    this.pendingSection = undefined;
+
     const cleanCss = this.loadThemeCss('clean');
     const editorialCss = this.loadThemeCss('editorial');
     const terminalCss = this.loadThemeCss('terminal');
@@ -1248,6 +1256,7 @@ export class PreviewPanel {
 
     let isCollapsed = false;
     const tocCount = ${tocCount};
+    const PENDING_SECTION = ${JSON.stringify(pendingSection)};
 
     // ===== Keyboard navigation state =====
     let cursorIndex = -1;
@@ -1280,6 +1289,52 @@ export class PreviewPanel {
       if (target) {
         vscode.postMessage({ type: 'openWikilink', target, section });
       }
+    });
+
+    // ===== Standard link handler (in-page anchors + relative markdown links) =====
+    // VS Code webviews can't resolve relative hrefs (base is a vscode-webview:// URI),
+    // so intercept local links and route them through the extension host.
+    function slugifyAnchor(s) {
+      return s.toLowerCase().replace(/[^\\w\\s-]/g, '').replace(/\\s+/g, '-').replace(/-+/g, '-').trim();
+    }
+    function scrollToSection(section) {
+      if (!section) return false;
+      const el = document.getElementById(section) || document.getElementById(slugifyAnchor(section));
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return true;
+      }
+      return false;
+    }
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href]');
+      if (!link || link.classList.contains('wikilink')) return;
+
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // In-page anchor — scroll within the current document.
+      if (href.charAt(0) === '#') {
+        e.preventDefault();
+        let section = href.slice(1);
+        try { section = decodeURIComponent(section); } catch (_) {}
+        scrollToSection(section);
+        return;
+      }
+
+      // Absolute URLs / non-local schemes (http:, https:, mailto:, vscode:, etc.) —
+      // let VS Code open them with its default handler.
+      if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+
+      // Local relative/absolute path — hand off to the extension to resolve & open.
+      e.preventDefault();
+      const hashIdx = href.indexOf('#');
+      let path = hashIdx >= 0 ? href.slice(0, hashIdx) : href;
+      let section = hashIdx >= 0 ? href.slice(hashIdx + 1) : '';
+      try { path = decodeURIComponent(path); } catch (_) {}
+      try { section = decodeURIComponent(section); } catch (_) {}
+      if (!path) return;
+      vscode.postMessage({ type: 'openMarkdownLink', href: path, section });
     });
 
     // ===== Navigation back/forward =====
@@ -1768,6 +1823,11 @@ export class PreviewPanel {
       }
     });
 
+    // Scroll to a section queued by a #-fragment link into this document.
+    if (PENDING_SECTION) {
+      requestAnimationFrame(() => scrollToSection(PENDING_SECTION));
+    }
+
     // Render Mermaid diagrams
     (async () => {
       if (typeof mermaid === 'undefined') return;
@@ -1875,9 +1935,46 @@ export class PreviewPanel {
     const doc = await vscode.workspace.openTextDocument(resolvedUri);
     // Push to navigation history
     this.navPush(resolvedUri);
+    // Queue the section scroll (if any) so the re-rendered webview jumps to it.
+    this.pendingSection = section;
     // Update the preview panel with the new document (no editor tab switch)
     this.update(doc);
     // Notify webview to update back/forward button states
+    this.panel.webview.postMessage({
+      type: 'navStateChanged',
+      canGoBack: this.navCanGoBack(),
+      canGoForward: this.navCanGoForward(),
+    });
+  }
+
+  // Open a standard relative/absolute markdown link clicked in the preview.
+  // Markdown targets render in the preview panel (with history); other local files
+  // open in a normal editor via VS Code's default handler.
+  private async openMarkdownLink(href: string, section?: string): Promise<void> {
+    if (!this.currentDocument) return;
+
+    // Ignore any scheme/fragment that slipped through; resolve relative to the current doc.
+    const currentDir = path.dirname(this.currentDocument.uri.fsPath);
+    const resolvedPath = path.isAbsolute(href) ? href : path.resolve(currentDir, href);
+
+    if (!fs.existsSync(resolvedPath)) {
+      vscode.window.showWarningMessage(`Link target not found: ${href}`);
+      return;
+    }
+
+    const isMarkdown = /\.(md|markdown|mdx|mkd|mdown|mdwn)$/i.test(resolvedPath);
+    const uri = vscode.Uri.file(resolvedPath);
+
+    if (!isMarkdown) {
+      // Non-markdown local file — let VS Code open it (image, code, etc.).
+      vscode.commands.executeCommand('vscode.open', uri);
+      return;
+    }
+
+    const doc = await vscode.workspace.openTextDocument(uri);
+    this.navPush(uri);
+    this.pendingSection = section;
+    this.update(doc);
     this.panel.webview.postMessage({
       type: 'navStateChanged',
       canGoBack: this.navCanGoBack(),
