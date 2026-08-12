@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.1] - 2026-08-12
+
+### Fixed
+- Relative markdown links (`[text](./other.md)`) now navigate inside the preview — previously they did nothing, since webviews resolve hrefs against a `vscode-webview://` base (#44)
+- Markdown targets open in the preview with back/forward history; other local files open in a normal editor tab
+- In-page `#anchor` links scroll within the current document, and `path#section` links jump to the heading after the new page renders
+- Absolute URLs (`http:`, `mailto:`, …) still open with VS Code's default handler; missing targets now show a warning instead of failing silently
+
 ## [0.10.0] - 2026-05-21
 
 ### Added
