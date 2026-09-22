@@ -1294,8 +1294,9 @@ export class PreviewPanel {
     // ===== Standard link handler (in-page anchors + relative markdown links) =====
     // VS Code webviews can't resolve relative hrefs (base is a vscode-webview:// URI),
     // so intercept local links and route them through the extension host.
+    // Keep in sync with slugifyHeading() in markdownParser.ts.
     function slugifyAnchor(s) {
-      return s.toLowerCase().replace(/[^\\w\\s-]/g, '').replace(/\\s+/g, '-').replace(/-+/g, '-').trim();
+      return s.toLowerCase().replace(/[^\\p{L}\\p{N}\\s-]/gu, '').replace(/\\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
     }
     function scrollToSection(section) {
       if (!section) return false;
