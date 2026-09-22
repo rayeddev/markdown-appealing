@@ -383,6 +383,18 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;');
 }
 
+// GitHub-style heading slug: keep Unicode letters and digits so non-Latin headings
+// (Chinese, Japanese, Cyrillic, …) get an id instead of an empty string. `\w` alone
+// is ASCII-only, which produced id="" for headings like `## 环境` and broke TOC links.
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 export function parseMarkdown(source: string): { html: string; toc: TocEntry[]; frontmatter: FrontmatterData } {
   const { frontmatter, body } = extractFrontmatter(source);
   const toc: TocEntry[] = [];
@@ -402,12 +414,9 @@ export function parseMarkdown(source: string): { html: string; toc: TocEntry[]; 
       .map((t) => t.content)
       .join('') ?? '';
 
-    let slug = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
+    // Headings made only of punctuation slugify to an empty string; fall back to a
+    // positional id so every TOC entry stays clickable.
+    let slug = slugifyHeading(text) || `heading-${toc.length + 1}`;
 
     const count = slugCounts.get(slug) ?? 0;
     slugCounts.set(slug, count + 1);
